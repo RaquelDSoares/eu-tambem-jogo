@@ -645,7 +645,7 @@ const qSentido = () => {
 const SOUNDS = [[pic('vaca', '🐮'), 'A vaca', 'Muuu'], [pic('cao', '🐶'), 'O cão', 'Ão, ão'], [pic('gato', '🐱'), 'O gato', 'Miau'], [pic('porco', '🐷'), 'O porco', 'Óinc, óinc'], [pic('ovelha', '🐑'), 'A ovelha', 'Mééé'], [pic('galinha', '🐔'), 'A galinha', 'Có, có, có'], [pic('pato', '🦆'), 'O pato', 'Quá, quá'], [pic('ra', '🐸'), 'A rã', 'Croac, croac']];
 const qSom = () => {
   const s = pickOne(SOUNDS);
-  return { q: `Quem faz «${s[2]}»?`, say: `Ouve com atenção. ${s[2]}! Quem faz ${s[2]}?`, art: '👂', okText: `Sim! ${s[1]} faz ${s[2]}!`,
+  return { q: `Quem faz «${s[2]}»?`, say: `Ouve com atenção. ${s[2]}! Quem faz ${s[2]}?`, art: pic('ouvido', '👂'), okText: `Sim! ${s[1]} faz ${s[2]}!`,
     opts: options(s, SOUNDS, nOpts()).map(o => ({ icon: o[0], label: o[1], ok: o === s })) };
 };
 const EMO = [[pic('contente', '😀'), 'contente'], [pic('triste', '😢'), 'triste'], [pic('zangado', '😠'), 'zangado'], [pic('surpreendido', '😮'), 'surpreendido'], [pic('sono', '😴'), 'com sono'], [pic('medo', '😨'), 'com medo']];

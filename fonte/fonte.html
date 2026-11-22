@@ -1,0 +1,1054 @@
+<title>Eu Também Jogo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<style>
+/* Layout: one-screen app. Thin educator bar on top; the stage below is filled by a few very large targets. */
+:root{
+  --bg:#EEF3FB; --surface:#FFFFFF; --ink:#14213D; --muted:#4A5878; --line:#C9D4E8;
+  --hl:#FFC800; --hl-ring:#14213D;
+  --green:#1E9E6A; --red:#E0453A; --blue:#2F6FE4; --yellow:#D99A00; --violet:#7B4FD6; --orange:#EE7A1B;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E1626; --surface:#1A2540; --ink:#F2F5FB; --muted:#A9B5CF; --line:#33415F; --hl-ring:#000000;
+  --green:#35C48A; --red:#FF6B5E; --blue:#5B93FF; --yellow:#FFC53D; --violet:#A07BFF; --orange:#FF9A45; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0E1626; --surface:#1A2540; --ink:#F2F5FB; --muted:#A9B5CF; --line:#33415F; --hl-ring:#000000;
+  --green:#35C48A; --red:#FF6B5E; --blue:#5B93FF; --yellow:#FFC53D; --violet:#A07BFF; --orange:#FF9A45; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+#app{height:100%;display:flex;flex-direction:column}
+
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-block:8px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:var(--surface);border-bottom:2px solid var(--line)}
+.brand{font-family:var(--display);font-weight:800;font-size:1.25rem;margin-right:auto;white-space:nowrap}
+.chip{font-weight:700;padding:4px 12px;border-radius:99px;background:var(--bg);border:2px solid var(--line);white-space:nowrap}
+.ctl{padding:6px 14px;border-radius:10px;border:2px solid var(--line);background:var(--surface);font-weight:700}
+.ctl:hover{border-color:var(--blue)}
+.ctl:focus-visible,.t:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+#meter{position:relative;width:110px;height:14px;border-radius:99px;background:var(--bg);border:2px solid var(--line);overflow:hidden}
+#meter i{position:absolute;inset:0 auto 0 0;width:0;background:var(--green)}
+#meter b{position:absolute;top:0;bottom:0;width:3px;background:var(--ink)}
+#note{padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:var(--hl);color:#14213D;font-weight:700}
+
+.stage{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:14px;padding-block:18px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.head{text-align:center}
+.head h1{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,5vmin,3rem);line-height:1.1;margin:0;text-wrap:balance}
+.head .text{font-size:clamp(1.05rem,2.8vmin,1.6rem);max-width:46ch;margin:8px auto 0;color:var(--ink)}
+.art{text-align:center;font-size:clamp(3.5rem,16vmin,8rem);line-height:1.1}
+.art.small{font-size:clamp(1.6rem,6vmin,3rem);letter-spacing:.1em}
+
+.grid{flex:1;display:flex;flex-wrap:wrap;gap:30px;align-content:stretch;padding:24px}
+.t{position:relative;overflow:hidden;flex:1 1 max(140px,calc(100%/var(--cols) - 22px));min-height:120px;min-width:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px;
+  border-radius:22px;border:4px solid var(--c);background:color-mix(in srgb,var(--c) 16%,var(--surface));
+  transition:transform .15s}
+.t .ic{font-size:clamp(2.6rem,10vmin,5.5rem);line-height:1.05}
+.t .lb{font-family:var(--display);font-weight:800;font-size:clamp(1.1rem,3.2vmin,1.9rem);line-height:1.1;text-align:center}
+.t .sub{font-size:.95rem;color:var(--muted);text-align:center;max-width:30ch}
+.t:disabled{opacity:.45;cursor:default}
+.t::after{content:"";position:absolute;inset:0;background:var(--hl);opacity:.45;transform-origin:left;transform:scaleX(var(--p,0));pointer-events:none}
+.t.scan,.t.focus{outline:8px solid var(--hl);box-shadow:0 0 0 13px var(--hl-ring);transform:scale(1.03);z-index:1;overflow:visible}
+.t.scan::after,.t.focus::after{border-radius:18px}
+.t.hit{animation:hit .35s}
+@keyframes hit{40%{transform:scale(.92)}100%{transform:scale(1)}}
+.num{font-family:var(--display);font-weight:800;line-height:1}
+.sw{display:block;width:1em;height:1em;border-radius:50%;border:3px solid var(--ink)}
+.grp{display:block;font-size:.42em;line-height:1.15;max-width:6.5em;text-align:center;word-break:break-all}
+.art.wrap{max-width:12em;margin-inline:auto;overflow-wrap:anywhere}
+.reg{border-collapse:collapse;width:100%;margin-block:6px;font-variant-numeric:tabular-nums}
+.reg th,.reg td{text-align:left;padding:4px 8px;border-bottom:1px solid var(--line)}
+.reg td+td,.reg th+th{text-align:right}
+.pic{display:block;height:1.35em;width:auto;max-width:100%;border-radius:.18em;object-fit:contain}
+.art .pic{height:clamp(120px,30vh,300px);margin-inline:auto;border-radius:18px}
+.t .pic{height:clamp(84px,24vmin,230px);border-radius:16px}
+.art .scene{display:block;margin-inline:auto;max-width:100%;max-height:36vh;border-radius:18px;border:3px solid var(--ink)}
+.balloon{display:block;width:1em;height:1.2em;border-radius:50% 50% 48% 48%;background:var(--c);position:relative;font-size:.8em;
+  box-shadow:inset -.12em -.1em 0 rgba(0,0,0,.15), inset .14em .12em 0 rgba(255,255,255,.35)}
+.balloon::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:.35em;background:var(--muted)}
+
+#ring{position:fixed;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;pointer-events:none;z-index:20;
+  background:conic-gradient(var(--hl) calc(var(--p,0)*360deg),transparent 0);
+  -webkit-mask:radial-gradient(circle,transparent 17px,#000 18px);mask:radial-gradient(circle,transparent 17px,#000 18px);
+  outline:2px solid var(--hl-ring);outline-offset:-1px}
+#cam{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));width:132px;border-radius:12px;border:3px solid var(--hl);transform:scaleX(-1);z-index:15;background:#000}
+
+#settings{position:fixed;inset:0;z-index:30;background:rgba(10,16,30,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.panel{background:var(--surface);color:var(--ink);border-radius:18px;padding:22px;width:min(560px,100%);max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.panel h2{font-family:var(--display);font-size:1.5rem;margin:0}
+.panel label{display:flex;flex-direction:column;gap:4px;font-weight:700}
+.panel label.row{flex-direction:row;align-items:center;gap:10px}
+.panel input[type=range]{width:100%;accent-color:var(--blue)}
+.panel input[type=checkbox]{width:22px;height:22px;accent-color:var(--blue)}
+.panel small{font-weight:400;color:var(--muted)}
+.modes{display:flex;flex-wrap:wrap;gap:8px}
+.modes .ctl[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:#fff}
+.rowb{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.ctl.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.confetti{position:fixed;top:-20px;width:14px;height:14px;border-radius:3px;z-index:25;pointer-events:none;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.ytwrap{width:min(100%,calc(52vh*16/9));aspect-ratio:16/9}
+.ytwrap iframe{width:100%;height:100%;border:0;border-radius:15px;pointer-events:none}
+.vid{display:block;margin-inline:auto;max-width:100%;max-height:52vh;border-radius:18px;border:3px solid var(--ink);background:#000}
+.dance,.still{display:inline-block}
+.dance{animation:dance .32s ease-in-out infinite alternate;transform-origin:50% 90%}
+.still{filter:grayscale(.6);opacity:.75}
+@keyframes dance{from{transform:rotate(-9deg)}to{transform:rotate(9deg) translateY(-14px)}}
+@media (prefers-reduced-motion:reduce){.confetti{display:none}.t,.t.hit,.dance{transition:none;animation:none}}
+</style>
+
+<div id="app">
+  <header class="bar">
+    <span class="brand">Eu Também Jogo</span>
+    <div id="meter" hidden title="Nível do sopro ou do sorriso. O traço marca o ponto em que conta como escolha."><i></i><b></b></div>
+    <span class="chip" id="chip">Sem acesso escolhido</span>
+    <button class="ctl" id="btnHome" type="button">Início</button>
+    <button class="ctl" id="btnSet" type="button">Definições</button>
+  </header>
+  <div id="note" hidden role="alert"></div>
+  <main class="stage" id="stage"></main>
+</div>
+<div id="ring" hidden></div>
+<video id="cam" hidden playsinline muted></video>
+
+<div id="settings" hidden>
+  <div class="panel" role="dialog" aria-label="Definições">
+    <h2>Definições do educador</h2>
+    <div>
+      <strong>Forma de acesso</strong>
+      <div class="modes" id="modeBtns"></div>
+    </div>
+    <label class="row" for="cScan"><input type="checkbox" id="cScan"> Varrimento automático (botão, sopro e sorriso)</label>
+    <small id="scanHelp" style="margin-top:-10px">Desligado: as opções deixam de acender sozinhas e é o educador que escolhe, com o rato ou tocando no ecrã.</small>
+    <label for="rScan">Velocidade do varrimento: <span id="vScan"></span>
+      <input type="range" id="rScan" min="0.8" max="6" step="0.2">
+      <small>Tempo que cada opção fica acesa (botão, sopro e sorriso).</small></label>
+    <label for="rMus">Tempo até a música parar: <span id="vMus"></span>
+      <input type="range" id="rMus" min="3" max="30" step="1">
+      <small>Nos jogos «A música parou!» e «Os meus vídeos». A pausa varia um pouco à volta deste tempo, para o aluno não adivinhar.</small></label>
+    <label for="rDwell">Tempo de olhar: <span id="vDwell"></span>
+      <input type="range" id="rDwell" min="0.5" max="4" step="0.1">
+      <small>Tempo que é preciso fixar uma opção para a escolher.</small></label>
+    <label for="rSens">Sensibilidade do sopro e do sorriso: <span id="vSens"></span>
+      <input type="range" id="rSens" min="1" max="10" step="1">
+      <small>Mais alto = basta um sopro fraco ou um sorriso pequeno. Veja o medidor na barra de cima.</small></label>
+    <div>
+      <strong>Opções nos jogos de Aprender</strong>
+      <div class="modes" id="levelBtns"></div>
+      <small>1 = só aparece a resposta certa (aprendizagem sem erro). Aumente à medida que o aluno consegue escolher.</small>
+    </div>
+    <div>
+      <strong>Os meus vídeos e músicas</strong>
+      <small>Junte vídeos (MP4) ou músicas (MP3) guardados neste computador. Ficam guardados aqui e aparecem em Músicas → Os meus vídeos, com paragens para o aluno continuar.</small>
+      <div class="rowb" style="justify-content:flex-start;margin-top:6px">
+        <label class="ctl" for="fVid" style="flex-direction:row;display:inline-flex">Juntar vídeos ou músicas</label>
+        <input type="file" id="fVid" accept="video/*,audio/*" multiple hidden>
+      </div>
+      <div id="vidList"></div>
+      <div id="ytBox" hidden style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+        <strong>Vídeos do YouTube</strong>
+        <label for="ytUrl">Link do vídeo<input type="url" id="ytUrl" placeholder="https://youtu.be/…" class="ctl" style="font-weight:400"></label>
+        <label for="ytName">Nome a mostrar ao aluno (opcional)<input type="text" id="ytName" placeholder="Ex.: Pintainho amarelinho" class="ctl" style="font-weight:400"></label>
+        <div class="rowb" style="justify-content:flex-start"><button type="button" class="ctl" id="ytAdd">Juntar vídeo do YouTube</button></div>
+        <small id="ytMsg"></small>
+      </div>
+      <small id="ytOff" hidden>Os vídeos do YouTube só funcionam na versão da plataforma alojada no site (GitHub Pages).</small>
+    </div>
+    <div>
+      <strong>Registo neste computador</strong>
+      <div id="reg"></div>
+    </div>
+    <label class="row" for="cRead"><input type="checkbox" id="cRead"> Ler em voz alta as opções e as histórias</label>
+    <div class="rowb">
+      <button class="ctl" id="btnFull" type="button">Ecrã inteiro</button>
+      <button class="ctl primary" id="btnClose" type="button">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>window.ETJ_IMG = {/*IMAGENS*/};</script>
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const stage = $('#stage'), ring = $('#ring'), meter = $('#meter'), note = $('#note'), cam = $('#cam');
+
+/* ---------- imagens (geradas à parte e embutidas na construção) ---------- */
+const IMG = window.ETJ_IMG || {};
+const scene = (n, fb) => IMG[n] ? `<img class="scene" src="${IMG[n]}" alt="">` : fb;
+const pic = (n, fb) => IMG[n] ? `<img class="pic" src="${IMG[n]}" alt="">` : fb;
+
+/* ---------- configuração ---------- */
+const cfg = { mode: null, scanMs: 2000, dwellMs: 1500, sens: 5, read: true, level: 3, scan: true, musicMs: 8000 };
+try { Object.assign(cfg, JSON.parse(localStorage.getItem('etj') || '{}')); } catch (e) {}
+cfg.mode = null; // o educador escolhe sempre o acesso ao abrir
+const save = () => { try { localStorage.setItem('etj', JSON.stringify(cfg)); } catch (e) {} };
+
+const MODES = {
+  olhar:    { n: 'Olhar',    i: '👁️', c: '--blue',   d: 'Fixar o olhar numa opção escolhe-a. Para leitores oculares que movem o cursor.' },
+  joystick: { n: 'Joystick', i: '🕹️', c: '--green',  d: 'Mover entre as opções com o joystick ou as setas e confirmar com o botão.' },
+  botao:    { n: 'Botão',    i: '🔘', c: '--orange', d: 'As opções acendem à vez. Um toque no botão (Espaço, Enter ou ecrã) escolhe.' },
+  sopro:    { n: 'Sopro',    i: '🌬️', c: '--violet', d: 'As opções acendem à vez. Um sopro no microfone escolhe.' },
+  sorriso:  { n: 'Sorriso',  i: '😊', c: '--red',    d: 'As opções acendem à vez. Um sorriso para a câmara escolhe.' },
+};
+
+/* ---------- som ---------- */
+let ac;
+function audio() {
+  if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  if (ac && ac.state === 'suspended') ac.resume();
+  return ac;
+}
+function tone(f, d = .3, type = 'triangle', when = 0, vol = .25) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.value = f;
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + d + .05);
+}
+function noise(d = .2, when = 0, vol = .3, hp = 0) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + when, n = Math.floor(a.sampleRate * d), buf = a.createBuffer(1, n, a.sampleRate), ch = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / n);
+  const s = a.createBufferSource(), g = a.createGain(); s.buffer = buf; g.gain.value = vol;
+  let node = s;
+  if (hp) { const f = a.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = hp; s.connect(f); node = f; }
+  node.connect(g).connect(a.destination); s.start(t);
+}
+function drum(when = 0) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+  o.frequency.setValueAtTime(170, t); o.frequency.exponentialRampToValueAtTime(45, t + .22);
+  g.gain.setValueAtTime(.6, t); g.gain.exponentialRampToValueAtTime(.0001, t + .28);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + .3);
+}
+const F = { G3: 196, C3: 130.81, F3: 174.61, C: 261.63, D: 293.66, E: 329.63, F: 349.23, G: 392, A: 440, B: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99 };
+const sfx = {
+  tick: () => tone(880, .05, 'sine', 0, .08),
+  ok: () => { tone(F.C5, .15); tone(F.E5, .15, 'triangle', .12); tone(F.G5, .3, 'triangle', .24); },
+  no: () => { tone(200, .25, 'sine', 0, .2); },
+  pop: () => { noise(.12, 0, .5, 800); tone(900, .08, 'square', 0, .1); },
+  water: () => { for (let i = 0; i < 6; i++) tone(900 - i * 90 + Math.random() * 60, .09, 'sine', i * .07, .15); },
+  fanfare: () => { [F.C, F.E, F.G, F.C5, F.G, F.C5].forEach((f, i) => tone(f, i === 5 ? .6 : .16, 'triangle', i * .14, .28)); },
+};
+
+/* ---------- voz ---------- */
+let sayId = 0, sayTimer;
+function say(text, cb) {
+  const id = ++sayId; clearTimeout(sayTimer);
+  const fin = () => { if (id !== sayId) return; sayId++; clearTimeout(sayTimer); cb && cb(); };
+  let spoke = false;
+  try {
+    const s = window.speechSynthesis;
+    if (s && cfg.read && text) {
+      s.cancel();
+      const u = new SpeechSynthesisUtterance(text); u.lang = 'pt-PT'; u.rate = .9;
+      const vs = s.getVoices(), v = vs.find(v => /^pt[-_]PT/i.test(v.lang)) || vs.find(v => /^pt/i.test(v.lang));
+      if (v) u.voice = v;
+      u.onend = fin; u.onerror = fin; s.speak(u); spoke = true;
+    }
+  } catch (e) {}
+  sayTimer = setTimeout(fin, spoke ? Math.max(2000, text.length * 95) : 450);
+}
+
+/* ---------- motor de acesso ---------- */
+let settingsOpen = false;
+const dwell = { x: -1, y: -1, el: null, t0: 0, grace: 0 };
+const Input = {
+  targets: [], idx: -1, timer: null, held: false, last: 0,
+  isScan() { return cfg.scan !== false && (cfg.mode === 'botao' || cfg.mode === 'sopro' || cfg.mode === 'sorriso'); },
+  refresh() {
+    clearTimeout(this.timer);
+    stage.querySelectorAll('.scan,.focus').forEach(e => e.classList.remove('scan', 'focus'));
+    this.targets = [...stage.querySelectorAll('[data-t]:not(:disabled)')];
+    this.idx = -1; dwell.el = null; dwell.grace = performance.now() + 700;
+    if (this.held || settingsOpen || !this.targets.length) return;
+    if (this.isScan()) {
+      if (this.targets.length === 1) { this.idx = 0; this.targets[0].classList.add('scan'); }
+      else this.timer = setTimeout(() => this.step(), 600);
+    } else if (cfg.mode === 'joystick') this.setFocus(0, false);
+  },
+  hold() { this.held = true; clearTimeout(this.timer); },
+  release() { this.held = false; this.refresh(); },
+  step() {
+    const n = this.targets.length; if (!n) return;
+    if (this.targets[this.idx]) this.targets[this.idx].classList.remove('scan');
+    this.idx = (this.idx + 1) % n;
+    const el = this.targets[this.idx]; el.classList.add('scan'); el.scrollIntoView({ block: 'nearest' });
+    sfx.tick(); if (cfg.read) say(el.dataset.t);
+    this.timer = setTimeout(() => this.step(), cfg.scanMs);
+  },
+  setFocus(i, speak = true) {
+    if (this.targets[this.idx]) this.targets[this.idx].classList.remove('focus');
+    this.idx = i; const el = this.targets[i]; el.classList.add('focus'); el.scrollIntoView({ block: 'nearest' });
+    if (speak) { sfx.tick(); if (cfg.read) say(el.dataset.t); }
+  },
+  move(dx, dy) {
+    if (cfg.mode !== 'joystick' || this.held || settingsOpen || !this.targets.length) return;
+    const cur = this.targets[this.idx]; if (!cur) return this.setFocus(0);
+    const ctr = e => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+    const c = ctr(cur); let best = -1, bs = 1e9;
+    this.targets.forEach((el, i) => {
+      if (el === cur) return; const p = ctr(el);
+      const along = (p.x - c.x) * dx + (p.y - c.y) * dy, across = Math.abs((p.x - c.x) * dy) + Math.abs((p.y - c.y) * dx);
+      if (along < 8) return; const s = along + across * 2.5; if (s < bs) { bs = s; best = i; }
+    });
+    if (best >= 0) this.setFocus(best);
+  },
+  // um "toque" vindo do botão, do sopro, do sorriso ou do botão do joystick
+  press() {
+    const now = performance.now();
+    if (now - this.last < 500 || this.held || settingsOpen || !cfg.mode) return;
+    const el = this.targets[this.idx]; if (!el) return;
+    this.last = now;
+    if (this.isScan()) {
+      clearTimeout(this.timer); this.select(el);
+      if (this.targets[this.idx] === el && !this.held && this.targets.length > 1) this.timer = setTimeout(() => this.step(), cfg.scanMs + 400);
+    } else if (cfg.mode === 'joystick') this.select(el);
+  },
+  select(el) { el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit'); el.click(); },
+};
+
+// teclado
+const isKey = e => e.code === 'Space' || e.code === 'Enter' || e.code === 'NumpadEnter';
+document.addEventListener('keydown', e => {
+  if (settingsOpen || !cfg.mode) return;
+  if (isKey(e) && cfg.mode !== 'olhar') { e.preventDefault(); if (!e.repeat) Input.press(); return; }
+  const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+  if (d && cfg.mode === 'joystick') { e.preventDefault(); Input.move(d[0], d[1]); }
+});
+document.addEventListener('keyup', e => { if (!settingsOpen && cfg.mode && cfg.mode !== 'olhar' && isKey(e)) e.preventDefault(); });
+// em varrimento, o ecrã inteiro é o botão
+stage.addEventListener('pointerdown', e => { if (Input.isScan()) { e.preventDefault(); Input.press(); } });
+stage.addEventListener('click', e => { if (Input.isScan() && e.isTrusted) { e.stopPropagation(); e.preventDefault(); } }, true);
+document.addEventListener('pointermove', e => { dwell.x = e.clientX; dwell.y = e.clientY; });
+document.documentElement.addEventListener('pointerleave', () => { dwell.x = -1; });
+
+/* ---------- sensores: sopro (microfone) e sorriso (câmara) ---------- */
+const Sense = {
+  kind: null, stream: null, an: null, buf: null, fl: null, above: 0, armed: true, lastV: 0, level: 0,
+  stop() {
+    if (this.stream) this.stream.getTracks().forEach(t => t.stop());
+    this.stream = null; this.kind = null; this.an = null; cam.hidden = true; meter.hidden = true; cam.srcObject = null;
+  },
+  async start(kind) {
+    this.stop(); note.hidden = true;
+    if (kind !== 'sopro' && kind !== 'sorriso') return;
+    const what = kind === 'sopro' ? 'o microfone' : 'a câmara';
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('sem acesso');
+      if (kind === 'sopro') {
+        const st = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+        if (cfg.mode !== kind) { st.getTracks().forEach(t => t.stop()); return; }
+        const a = audio(), src = a.createMediaStreamSource(st);
+        this.an = a.createAnalyser(); this.an.fftSize = 1024; src.connect(this.an);
+        this.buf = new Float32Array(this.an.fftSize); this.stream = st;
+      } else {
+        const st = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, facingMode: 'user' } });
+        if (cfg.mode !== kind) { st.getTracks().forEach(t => t.stop()); return; }
+        this.stream = st; cam.srcObject = st; cam.hidden = false; await cam.play();
+        if (!this.fl) {
+          const V = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+          const mp = await import(V + '/vision_bundle.mjs');
+          const fs = await mp.FilesetResolver.forVisionTasks(V + '/wasm');
+          this.fl = await mp.FaceLandmarker.createFromOptions(fs, {
+            baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task' },
+            outputFaceBlendshapes: true, runningMode: 'VIDEO', numFaces: 1 });
+        }
+      }
+      this.kind = kind; this.armed = true; this.above = 0; meter.hidden = false;
+    } catch (e) {
+      this.stop();
+      note.textContent = `Não foi possível usar ${what} aqui. Abra o ficheiro Eu-Tambem-Jogo.html no Chrome ou Edge, com ligação à internet, e autorize ${what}. Entretanto, a tecla Espaço ou um toque no ecrã funcionam como botão.`;
+      note.hidden = false;
+    }
+  },
+  poll(now) {
+    if (!this.kind) return;
+    let lvl = this.level, thr;
+    if (this.kind === 'sopro') {
+      this.an.getFloatTimeDomainData(this.buf);
+      let s = 0; for (let i = 0; i < this.buf.length; i++) s += this.buf[i] * this.buf[i];
+      lvl = Math.min(1, Math.sqrt(s / this.buf.length) / .5);
+      thr = (.4 - cfg.sens * .036) / .5;
+    } else {
+      thr = .9 - cfg.sens * .07;
+      if (now - this.lastV > 70 && cam.readyState >= 2) {
+        this.lastV = now;
+        try {
+          const r = this.fl.detectForVideo(cam, now), cs = r.faceBlendshapes && r.faceBlendshapes[0] && r.faceBlendshapes[0].categories;
+          if (cs) { const g = n => (cs.find(c => c.categoryName === n) || { score: 0 }).score; lvl = (g('mouthSmileLeft') + g('mouthSmileRight')) / 2; } else lvl = 0;
+        } catch (e) {}
+      }
+    }
+    this.level = lvl;
+    meter.firstElementChild.style.width = (lvl * 100) + '%'; meter.lastElementChild.style.left = (thr * 100) + '%';
+    if (lvl >= thr) {
+      if (!this.above) this.above = now;
+      if (this.armed && now - this.above > 90) { this.armed = false; Input.press(); }
+    } else { this.above = 0; if (lvl < thr * .7) this.armed = true; }
+  },
+};
+
+/* ---------- ciclo principal: olhar, comando de jogos, sensores ---------- */
+const pad = { t: 0, b: false, ok: true };
+function loop(now) {
+  requestAnimationFrame(loop);
+  // olhar: escolher por fixação
+  if (cfg.mode === 'olhar' && !Input.held && !settingsOpen && dwell.x >= 0) {
+    const hit = document.elementFromPoint(dwell.x, dwell.y);
+    const el = hit && hit.closest ? hit.closest('#stage [data-t]:not(:disabled)') : null;
+    if (el !== dwell.el) { if (dwell.el) dwell.el.style.removeProperty('--p'); dwell.el = el; dwell.t0 = Math.max(now, dwell.grace); }
+    if (el) {
+      const p = Math.max(0, Math.min(1, (now - dwell.t0) / cfg.dwellMs));
+      el.style.setProperty('--p', p); ring.hidden = false; ring.style.left = dwell.x + 'px'; ring.style.top = dwell.y + 'px'; ring.style.setProperty('--p', p);
+      if (p >= 1) { el.style.removeProperty('--p'); dwell.t0 = now + 900; Input.select(el); }
+    } else ring.hidden = true;
+  } else { if (dwell.el) { dwell.el.style.removeProperty('--p'); dwell.el = null; } ring.hidden = true; }
+  // comando de jogos / joystick USB
+  if (pad.ok && cfg.mode) {
+    try {
+      const p = [...(navigator.getGamepads ? navigator.getGamepads() : [])].find(Boolean);
+      if (p) {
+        const x = p.axes[0] || 0, y = p.axes[1] || 0, B = i => p.buttons[i] && p.buttons[i].pressed; let dx = 0, dy = 0;
+        if (Math.abs(x) > .5 && Math.abs(x) >= Math.abs(y)) dx = Math.sign(x); else if (Math.abs(y) > .5) dy = Math.sign(y);
+        if (B(14)) dx = -1; if (B(15)) dx = 1; if (B(12)) dy = -1; if (B(13)) dy = 1;
+        if (dx || dy) { if (now - pad.t > 450) { pad.t = now; Input.move(dx, dy); } } else pad.t = 0;
+        const b = [0, 1, 2, 3].some(B); if (b && !pad.b) Input.press(); pad.b = b;
+      }
+    } catch (e) { pad.ok = false; }
+  }
+  Sense.poll(now);
+}
+requestAnimationFrame(loop);
+
+/* ---------- ecrãs ---------- */
+let leave = null;
+function show(o) {
+  if (leave && !o.keep) { const f = leave; leave = null; f(); }
+  stage.innerHTML = '';
+  const head = document.createElement('div'); head.className = 'head';
+  const h = document.createElement('h1'); h.textContent = o.title; head.append(h);
+  if (o.text) { const p = document.createElement('p'); p.className = 'text'; p.textContent = o.text; head.append(p); }
+  stage.append(head);
+  if (o.art) { const a = document.createElement('div'); a.className = 'art ' + (o.artCls || ''); a.setAttribute('aria-hidden', 'true'); a.innerHTML = o.art; stage.append(a); }
+  const items = o.items || [];
+  if (items.length) {
+    const g = document.createElement('div'); g.className = 'grid'; g.style.setProperty('--cols', o.cols || Math.min(items.length, 3));
+    for (const it of items) {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 't'; b.dataset.t = it.label; b.disabled = !!it.disabled;
+      b.style.setProperty('--c', `var(${it.color || '--blue'})`);
+      b.innerHTML = `<span class="ic" aria-hidden="true">${it.icon}</span><span class="lb">${it.label}</span>` + (it.sub ? `<span class="sub">${it.sub}</span>` : '');
+      b.onclick = () => { audio(); it.on(); };
+      g.append(b);
+    }
+    stage.append(g);
+  }
+  if (o.say && cfg.mode) { Input.hold(); say(o.say, () => Input.release()); }
+  else { Input.held = false; Input.refresh(); }
+}
+const back = fn => ({ label: 'Voltar', icon: '↩️', color: '--muted', on: fn });
+
+function modeSelect() {
+  show({ title: 'Como vai jogar hoje?', text: 'Escolha a forma de acesso do aluno. Com um clique, todos os jogos, histórias e músicas passam a funcionar dessa maneira.',
+    cols: 3, items: Object.entries(MODES).map(([k, m]) => ({ label: m.n, icon: m.i, color: m.c, sub: m.d, on: () => setMode(k, true) })) });
+}
+function drawChip() {
+  if (!cfg.mode) return;
+  const m = MODES[cfg.mode], manual = cfg.scan === false && ['botao', 'sopro', 'sorriso'].includes(cfg.mode);
+  $('#chip').textContent = m.i + ' ' + m.n + (manual ? ' · sem varrimento' : '');
+}
+function setMode(k, goHome) {
+  cfg.mode = k; save(); audio();
+  drawChip();
+  Sense.start(k); syncSettings();
+  if (goHome) home(); else Input.refresh();
+}
+function home() {
+  show({ title: 'O que queres fazer?', say: 'O que queres fazer?', cols: 2, items: [
+    { label: 'Aprender', icon: '🧠', color: '--blue', on: menuAprender },
+    { label: 'Jogos', icon: '🎮', color: '--green', on: menuJogos },
+    { label: 'Histórias', icon: pic('faisca-gruta', '📖'), color: '--orange', on: menuHistorias },
+    { label: 'Músicas', icon: '🎵', color: '--violet', on: menuMusicas } ] });
+}
+function win(again, menu, msg) {
+  sfx.fanfare();
+  for (let i = 0; i < 28; i++) { const c = document.createElement('i'); c.className = 'confetti'; c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = `var(${['--red', '--blue', '--green', '--hl', '--violet', '--orange'][i % 6]})`; c.style.animationDelay = Math.random() * .6 + 's';
+    document.body.append(c); setTimeout(() => c.remove(), 3200); }
+  show({ title: 'Muito bem!', art: '🏆', say: msg || 'Muito bem! Conseguiste!', items: [
+    { label: 'Outra vez', icon: '🔁', color: '--green', on: again }, back(menu) ] });
+}
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/* ---------- jogos ---------- */
+function menuJogos() {
+  show({ title: 'Jogos', say: 'Jogos. Escolhe um jogo.', cols: 3, items: [
+    { label: 'Rebenta os balões', icon: '🎈', color: '--red', on: balloons },
+    { label: 'Rega a flor', icon: pic('girassol', '🌻'), color: '--green', on: flower },
+    { label: 'Onde está o animal?', icon: '🐶', color: '--blue', on: findAnimal },
+    { label: 'Jogo dos pares', icon: '🃏', color: '--violet', on: memory },
+    back(home) ] });
+}
+function balloons() {
+  const cols = [['vermelho', '--red'], ['azul', '--blue'], ['verde', '--green'], ['amarelo', '--yellow'], ['roxo', '--violet'], ['laranja', '--orange']];
+  const gone = new Set();
+  const draw = first => {
+    if (gone.size === cols.length) return win(balloons, menuJogos, 'Rebentaste os balões todos!');
+    show({ title: 'Rebenta os balões!', say: first && 'Rebenta os balões!', cols: 3, items: [
+      ...cols.map(([n, c], i) => ({ label: 'Balão ' + n, icon: gone.has(i) ? '💥' : '<i class="balloon"></i>', color: c, disabled: gone.has(i), on() { gone.add(i); sfx.pop(); draw(); } })),
+      back(menuJogos) ] });
+  };
+  draw(true);
+}
+function flower() {
+  const st = [scene('semente', '🌰'), scene('rebento', '🌱'), scene('planta', '🌿'), scene('botao-flor', '🌷'), scene('girassol', '🌻')]; let i = 0;
+  const draw = first => show({ title: 'Rega a flor', text: i ? 'Está a crescer! Rega outra vez.' : 'A semente tem sede. Rega-a para ela crescer.', say: first && 'A semente tem sede. Rega-a para ela crescer.', art: st[i],
+    items: [{ label: 'Regar', icon: '💧', color: '--blue', on() { sfx.water(); i++; if (i >= st.length - 1) { show({ title: 'A flor cresceu!', art: st[i], say: 'A flor cresceu! Que linda!' }); setTimeout(() => win(flower, menuJogos, 'Muito bem! Regaste a flor até ela crescer!'), 3000); } else draw(); } }] });
+  draw(true);
+}
+const ANIMALS = [[pic('cao', '🐶'), 'o cão'], [pic('gato', '🐱'), 'o gato'], [pic('vaca', '🐮'), 'a vaca'], [pic('porco', '🐷'), 'o porco'], [pic('ra', '🐸'), 'a rã'], [pic('leao', '🦁'), 'o leão'], [pic('elefante', '🐘'), 'o elefante'], [pic('macaco', '🐵'), 'o macaco'], [pic('galinha', '🐔'), 'a galinha'], [pic('cavalo', '🐴'), 'o cavalo']];
+const cap = s => s.replace(/^[ao] /, '').replace(/^./, c => c.toUpperCase());
+function findAnimal() {
+  let round = 0;
+  const next = () => {
+    if (round === 5) return win(findAnimal, menuJogos, 'Encontraste os animais todos!');
+    const opts = shuffle(ANIMALS).slice(0, 3), goal = opts[Math.floor(Math.random() * 3)], wrong = new Set();
+    const draw = first => show({ title: `Onde está ${goal[1]}?`, say: first && `Onde está ${goal[1]}?`, items: opts.map((a, i) => ({ label: cap(a[1]), icon: a[0], color: ['--blue', '--orange', '--green'][i], disabled: wrong.has(i),
+      on() {
+        if (a === goal) { sfx.ok(); round++; show({ title: `Sim! É ${goal[1]}!`, art: goal[0], say: `Sim! É ${goal[1]}!` }); setTimeout(next, 2200); }
+        else { sfx.no(); wrong.add(i); say(`Esse é ${a[1]}. Tenta outra vez.`); draw(); }
+      } })) });
+    draw(true);
+  };
+  next();
+}
+function memory() {
+  const cards = shuffle([0, 1, 2, 0, 1, 2].map(i => ANIMALS[i])), open = [], done = new Set();
+  const draw = (frozen, first) => show({ title: 'Jogo dos pares', say: first && 'Encontra os pares iguais.', cols: 3, items: [
+    ...cards.map((c, i) => { const up = open.includes(i) || done.has(i);
+      return { label: up ? cap(c[1]) : 'Carta ' + (i + 1), icon: up ? c[0] : '❓', color: up ? '--green' : '--violet', disabled: frozen || up,
+        on() {
+          open.push(i); say(cap(c[1]));
+          if (open.length < 2) return draw();
+          if (cards[open[0]] === cards[open[1]]) { sfx.ok(); open.forEach(j => done.add(j)); open.length = 0; done.size === cards.length ? setTimeout(() => win(memory, menuJogos, 'Encontraste os pares todos!'), 600) : draw(); }
+          else { sfx.no(); draw(true); setTimeout(() => { open.length = 0; draw(); }, 1600); }
+        } }; }),
+    { ...back(menuJogos), disabled: frozen } ] });
+  draw(false, true);
+}
+
+/* ---------- aprender ---------- */
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pickOne = a => a[Math.floor(Math.random() * a.length)];
+const PAL = ['--blue', '--orange', '--green', '--violet'];
+const nOpts = () => cfg.level || 3;
+let REG = {};
+try { REG = JSON.parse(localStorage.getItem('etj-reg') || '{}'); } catch (e) {}
+function rec(key, first) {
+  const r = REG[key] || (REG[key] = { q: 0, f: 0 }); r.q++; if (first) r.f++;
+  try { localStorage.setItem('etj-reg', JSON.stringify(REG)); } catch (e) {}
+}
+// escolhe n opções: a certa + distratores diferentes
+function options(correct, pool, n, same = (a, b) => a === b) {
+  const out = [correct];
+  for (const p of shuffle(pool)) { if (out.length >= n) break; if (!out.some(o => same(o, p))) out.push(p); }
+  return shuffle(out);
+}
+function quiz(key, title, gen, menu) {
+  let round = 0; const N = 5;
+  const next = () => {
+    if (round === N) return win(() => quiz(key, title, gen, menu), menu, 'Muito bem! Acabaste o jogo ' + title + '!');
+    const q = gen(nOpts()); const wrong = new Set(); let first = true;
+    const opts = nOpts() === 1 ? q.opts.filter(o => o.ok) : q.opts;
+    const draw = sayTxt => show({ title: q.q, text: q.text, art: q.art, artCls: q.artCls, say: sayTxt,
+      cols: opts.length === 4 ? 2 : opts.length + (opts.length === 1 ? 1 : 0),
+      items: [...opts.map((o, i) => ({ label: o.label, icon: o.icon, color: o.color || PAL[i % 4], disabled: wrong.has(i),
+        on() {
+          if (o.ok) { rec(key, first); sfx.ok(); round++; show({ title: q.okText || 'Muito bem!', art: o.icon, artCls: q.okCls, say: q.okText || 'Muito bem!' }); setTimeout(next, 2600); }
+          else { first = false; sfx.no(); wrong.add(i); draw((q.hint ? q.hint(o) + ' ' : '') + 'Tenta outra vez. ' + q.q); }
+        } })), back(menu)] });
+    draw(q.say || q.q);
+  };
+  next();
+}
+const NUMW = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez'];
+const numW = (n, f) => f && n === 1 ? 'uma' : f && n === 2 ? 'duas' : NUMW[n];
+const THINGS = [['🦆', 'patos', 0, 'pato'], ['⭐', 'estrelas', 1, 'estrela'], ['🍎', 'maçãs', 1, 'maçã'], ['⚽', 'bolas', 1, 'bola'], ['🐟', 'peixes', 0, 'peixe'], ['🚗', 'carros', 0, 'carro'], ['🌸', 'flores', 1, 'flor'], ['🐞', 'joaninhas', 1, 'joaninha']];
+const numIcon = n => `<span class="num">${n}</span>`;
+const maxN = () => (cfg.level || 3) >= 4 ? 10 : 5;
+const qQuantos = () => {
+  const [e, w, f, s] = pickOne(THINGS), n = rnd(1, maxN());
+  return { q: `${f ? 'Quantas' : 'Quantos'} ${w} há?`, art: e.repeat(n), artCls: 'small wrap',
+    opts: options(n, Array.from({ length: maxN() }, (_, i) => i + 1), nOpts()).map(k => ({ icon: numIcon(k), label: NUMW[k][0].toUpperCase() + NUMW[k].slice(1), ok: k === n })),
+    okText: `Sim! ${n === 1 ? (f ? 'É uma ' : 'É um ') + s : 'São ' + numW(n, f) + ' ' + w}!` };
+};
+const qMostra = () => {
+  const [e, w, f, s] = pickOne(THINGS), n = rnd(1, maxN());
+  return { q: `Onde há ${numW(n, f)} ${n === 1 ? s : w}?`, text: String(n),
+    opts: options(n, Array.from({ length: maxN() }, (_, i) => i + 1), nOpts()).map(k => ({ icon: `<span class="grp">${e.repeat(k)}</span>`, label: 'Estes', ok: k === n })),
+    okText: `Sim! Contaste ${numW(n, f)}!` };
+};
+const COLORS = [['vermelho', '#E0453A'], ['azul', '#2F6FE4'], ['verde', '#1E9E6A'], ['amarelo', '#FFC800'], ['laranja', '#EE7A1B'], ['roxo', '#7B4FD6'], ['cor-de-rosa', '#F06BB0'], ['castanho', '#8B5A2B']];
+const qCor = () => {
+  const c = pickOne(COLORS);
+  return { q: `Onde está o ${c[0]}?`, okText: `Sim! É ${c[0]}!`,
+    opts: options(c, COLORS, nOpts()).map(o => ({ icon: `<span class="sw" style="background:${o[1]}"></span>`, label: o[0][0].toUpperCase() + o[0].slice(1), color: '--muted', ok: o === c })) };
+};
+const SHAPES = [['o círculo', '<circle cx="50" cy="50" r="42"/>'], ['o quadrado', '<rect x="10" y="10" width="80" height="80"/>'], ['o triângulo', '<polygon points="50,6 95,90 5,90"/>'],
+  ['o retângulo', '<rect x="3" y="26" width="94" height="48"/>'], ['a estrela', '<polygon points="50,4 62,37 97,37 69,58 79,93 50,72 21,93 31,58 3,37 38,37"/>'],
+  ['o coração', '<path d="M50 90 C8 60 2 36 17 20 C30 7 46 14 50 28 C54 14 70 7 83 20 C98 36 92 60 50 90Z"/>'], ['o losango', '<polygon points="50,4 92,50 50,96 8,50"/>']];
+const svgShape = (s, col) => `<svg viewBox="0 0 100 100" width="1em" height="1em" style="fill:var(${col});stroke:var(--ink);stroke-width:3">${s[1]}</svg>`;
+const qForma = () => {
+  const s = pickOne(SHAPES), cols = shuffle(PAL.concat('--red', '--yellow'));
+  return { q: `Onde está ${s[0]}?`, okText: `Sim! É ${s[0]}!`,
+    opts: options(s, SHAPES, nOpts()).map((o, i) => ({ icon: svgShape(o, cols[i]), label: o[0].replace(/^[ao] /, '').replace(/^./, c => c.toUpperCase()), ok: o === s })) };
+};
+const BIG = [['🐘', 'elefante'], ['🐻', 'urso'], ['🍎', 'maçã'], ['🚗', 'carro'], ['🌳', 'árvore'], ['🐱', 'gato'], ['⚽', 'bola']];
+const qTamanho = () => {
+  const [e] = pickOne(BIG), big = Math.random() < .5, n = Math.max(2, nOpts());
+  const sizes = shuffle([1.15, .8, .5, .32].slice(0, n)), target = big ? Math.max(...sizes) : Math.min(...sizes);
+  return { q: big ? 'Qual é o maior?' : 'Qual é o mais pequeno?', okText: big ? 'Sim! Esse é o maior!' : 'Sim! Esse é o mais pequeno!',
+    opts: sizes.map(z => ({ icon: `<span style="font-size:${z}em">${e}</span>`, label: 'Este', ok: z === target })) };
+};
+const SEQ = ['🍎', '🍌', '🍇', '⭐', '🌙', '☀️', '🐶', '🐱', '🚗', '🎈'];
+const qSequencia = () => {
+  const lv = cfg.level || 3;
+  if (lv >= 4 && Math.random() < .4) {
+    const st = rnd(1, 6), step = pickOne([1, 1, 2]), seq = [0, 1, 2, 3].map(i => st + i * step), ans = st + 4 * step;
+    return { q: 'Que número vem a seguir?', art: seq.join(' ') + ' ?', artCls: 'small', okText: `Sim! A seguir vem o ${ans}!`,
+      opts: options(ans, [ans - 1, ans + 1, ans + 2, ans - 2, st].filter(x => x > 0), nOpts()).map(k => ({ icon: numIcon(k), label: String(k), ok: k === ans })) };
+  }
+  const [a, b, c] = shuffle(SEQ);
+  const pat = lv <= 2 ? [a, b] : pickOne([[a, b], [a, b, c], [a, a, b]]);
+  const len = pat.length === 2 ? 5 : pat.length * 2, seq = Array.from({ length: len }, (_, i) => pat[i % pat.length]), ans = pat[len % pat.length];
+  return { q: 'O que vem a seguir?', art: seq.join(' ') + ' ❓', artCls: 'small wrap', okText: 'Sim! Completaste a sequência!',
+    opts: options(ans, [...new Set([...pat, ...SEQ])], nOpts()).map(e => ({ icon: e, label: 'Este', ok: e === ans })) };
+};
+const SENSES = [['ver o arco-íris', pic('arco-iris', '🌈'), pic('olhos', '👀'), 'Os olhos'], ['ouvir a música', pic('musica', '🎵'), pic('ouvido', '👂'), 'Os ouvidos'], ['cheirar a flor', pic('flor', '🌸'), pic('nariz', '👃'), 'O nariz'], ['saborear o gelado', pic('gelado', '🍦'), pic('lingua', '👅'), 'A língua'], ['sentir o ursinho fofo', pic('ursinho', '🧸'), pic('maos', '✋'), 'As mãos']];
+const qSentido = () => {
+  const s = pickOne(SENSES);
+  return { q: `Para ${s[0]}, o que usamos?`, art: s[1], okText: `Sim! Para ${s[0]} usamos ${s[3].toLowerCase()}!`,
+    opts: options(s, SENSES, nOpts()).map(o => ({ icon: o[2], label: o[3], ok: o === s })) };
+};
+const SOUNDS = [[pic('vaca', '🐮'), 'A vaca', 'Muuu'], [pic('cao', '🐶'), 'O cão', 'Ão, ão'], [pic('gato', '🐱'), 'O gato', 'Miau'], [pic('porco', '🐷'), 'O porco', 'Óinc, óinc'], [pic('ovelha', '🐑'), 'A ovelha', 'Mééé'], [pic('galinha', '🐔'), 'A galinha', 'Có, có, có'], [pic('pato', '🦆'), 'O pato', 'Quá, quá'], [pic('ra', '🐸'), 'A rã', 'Croac, croac']];
+const qSom = () => {
+  const s = pickOne(SOUNDS);
+  return { q: `Quem faz «${s[2]}»?`, say: `Ouve com atenção. ${s[2]}! Quem faz ${s[2]}?`, art: '👂', okText: `Sim! ${s[1]} faz ${s[2]}!`,
+    opts: options(s, SOUNDS, nOpts()).map(o => ({ icon: o[0], label: o[1], ok: o === s })) };
+};
+const EMO = [[pic('contente', '😀'), 'contente'], [pic('triste', '😢'), 'triste'], [pic('zangado', '😠'), 'zangado'], [pic('surpreendido', '😮'), 'surpreendido'], [pic('sono', '😴'), 'com sono'], [pic('medo', '😨'), 'com medo']];
+const qEmocao = () => {
+  const s = pickOne(EMO);
+  return { q: `Quem está ${s[1]}?`, okText: `Sim! Esta cara está ${s[1]}.`,
+    opts: options(s, EMO, nOpts()).map(o => ({ icon: o[0], label: o[1][0].toUpperCase() + o[1].slice(1), ok: o === s })) };
+};
+const VOW = [['A', '🐝', 'abelha'], ['E', '🐘', 'elefante'], ['I', '⛪', 'igreja'], ['O', '🥚', 'ovo'], ['U', '🍇', 'uva']];
+const qVogal = () => {
+  const s = pickOne(VOW);
+  return { q: `Onde está a letra ${s[0]}?`, okText: `Sim! ${s[0]} de ${s[2]}! ${s[1]}`,
+    opts: options(s, VOW, nOpts()).map(o => ({ icon: `<span class="num">${o[0]}</span>`, label: 'Letra ' + o[0], ok: o === s })) };
+};
+
+// primeiros passos: causa e efeito, um só alvo, nunca há erro
+function fogo() {
+  let n = 0; const F2 = IMG['fogo-1'] ? [1, 2, 3, 4].map(k => scene('fogo-' + k)) : ['🎆', '🎇', '✨', '🌟', '🎉'];
+  const draw = first => show({ keep: !first, title: 'Fogo de artifício', text: 'Cada vez que escolhes, o céu enche-se de luz! (Para sair, o educador usa o botão Início.)',
+    say: first && 'Fogo de artifício! Faz acontecer!', art: n ? F2[(n - 1) % F2.length] : scene('ceu-noite', '🌃'),
+    items: [{ label: 'Mais!', icon: pic('fogo-3', '🎆'), color: '--violet', on() { n++; win2(); draw(); } }] });
+  const win2 = () => {
+    [F.C5, F.E5, F.G5].forEach((f, i) => tone(f * (1 + (n % 3) * .12), .5, 'triangle', i * .08, .2)); noise(.4, .1, .2, 2000);
+    for (let i = 0; i < 24; i++) { const c = document.createElement('i'); c.className = 'confetti'; c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = `var(${['--red', '--blue', '--green', '--hl', '--violet', '--orange'][i % 6]})`; c.style.animationDelay = Math.random() * .4 + 's';
+      document.body.append(c); setTimeout(() => c.remove(), 3000); }
+  };
+  draw(true);
+}
+function surpresa() {
+  let cur = null;
+  const draw = first => show({ title: cur ? cur[1] + '!' : 'Quem está escondido?', text: 'Escolhe para descobrir quem aparece. (Para sair, o educador usa o botão Início.)',
+    say: first ? 'Quem está escondido? Escolhe para descobrir!' : `${cur[1]}! ${cur[2]}!`, art: cur ? cur[0] : scene('presente', '🎁'),
+    items: [{ label: cur ? 'Outra surpresa' : 'Abrir', icon: '🎁', color: '--orange', on() { cur = pickOne(SOUNDS.filter(s => s !== cur)); sfx.ok(); draw(); } }] });
+  draw(true);
+}
+function menuAprender() {
+  show({ title: 'Aprender', say: 'Aprender. Escolhe o que queres aprender.', items: [
+    { label: 'Primeiros passos', icon: pic('fogo-1', '✨'), color: '--violet', sub: 'Causa e efeito, sem erro', on: menuPassos },
+    { label: 'Números e lógica', icon: '🔢', color: '--blue', sub: 'Contar, formas, tamanhos, sequências', on: menuNumeros },
+    { label: 'O mundo à volta', icon: '🌍', color: '--green', sub: 'Cores, sentidos, sons, emoções, letras', on: menuMundo },
+    back(home) ] });
+}
+function menuPassos() {
+  show({ title: 'Primeiros passos', say: 'Primeiros passos.', items: [
+    { label: 'Fogo de artifício', icon: pic('fogo-2', '🎆'), color: '--violet', on: fogo },
+    { label: 'Surpresa!', icon: pic('presente', '🎁'), color: '--orange', on: surpresa },
+    { label: 'A música parou!', icon: '⏯️', color: '--red', on: musicaParou },
+    { label: 'Rega a flor', icon: pic('girassol', '🌻'), color: '--green', on: flower },
+    back(menuAprender) ] });
+}
+function menuNumeros() {
+  const m = menuNumeros;
+  show({ title: 'Números e lógica', say: 'Números e lógica.', cols: 3, items: [
+    { label: 'Quantos são?', icon: '🔢', color: '--blue', on: () => quiz('Quantos são?', 'Quantos são', qQuantos, m) },
+    { label: 'Mostra-me', icon: '🍎', color: '--red', on: () => quiz('Mostra-me', 'Mostra-me', qMostra, m) },
+    { label: 'Formas', icon: svgShape(SHAPES[2], '--orange'), color: '--orange', on: () => quiz('Formas', 'das formas', qForma, m) },
+    { label: 'Grande e pequeno', icon: '🐘', color: '--green', on: () => quiz('Grande e pequeno', 'grande e pequeno', qTamanho, m) },
+    { label: 'O que vem a seguir?', icon: '🔁', color: '--violet', on: () => quiz('Sequências', 'das sequências', qSequencia, m) },
+    back(menuAprender) ] });
+}
+function menuMundo() {
+  const m = menuMundo;
+  show({ title: 'O mundo à volta', say: 'O mundo à volta.', cols: 3, items: [
+    { label: 'Cores', icon: '🎨', color: '--red', on: () => quiz('Cores', 'das cores', qCor, m) },
+    { label: 'Os sentidos', icon: pic('nariz', '👀'), color: '--blue', on: () => quiz('Sentidos', 'dos sentidos', qSentido, m) },
+    { label: 'Sons dos animais', icon: '🐮', color: '--green', on: () => quiz('Sons dos animais', 'dos sons', qSom, m) },
+    { label: 'Emoções', icon: pic('contente', '😀'), color: '--yellow', on: () => quiz('Emoções', 'das emoções', qEmocao, m) },
+    { label: 'Vogais', icon: '🅰️', color: '--violet', on: () => quiz('Vogais', 'das vogais', qVogal, m) },
+    back(menuAprender) ] });
+}
+
+/* ---------- histórias ---------- */
+const STORIES = [
+  { name: 'O dragão Faísca', icon: '🐉', color: '--red', pics: { start: 'faisca-gruta', floresta: 'faisca-floresta', bolhas: 'faisca-bolhas', voa: 'faisca-voa', castelo: 'faisca-castelo', festa: 'faisca-festa', banho: 'faisca-banho' }, nodes: {
+    start: { art: '🐉', text: 'Era uma vez um dragão pequenino chamado Faísca. O Faísca não sabia deitar fogo. Só sabia fazer bolhas de sabão! Um dia, saiu da sua gruta. Para onde vai o Faísca?', go: [['Para a floresta', '🌲', 'floresta'], ['Para o castelo', '🏰', 'castelo']] },
+    floresta: { art: '🦊', text: 'Na floresta, o Faísca encontrou uma raposa a chorar. A bola dela ficou presa no cimo de uma árvore. O que faz o Faísca?', go: [['Sopra bolhas', '🧼', 'bolhas'], ['Voa até lá acima', '☁️', 'voa']] },
+    bolhas: { art: '⚽', text: 'O Faísca soprou uma bolha enorme. A bolha subiu, subiu, agarrou a bola e trouxe-a devagarinho até ao chão. A raposa deu pulos de alegria e os dois ficaram amigos para sempre. Fim.' },
+    voa: { art: '🌈', text: 'O Faísca bateu as asas com toda a força e voou até ao cimo da árvore. Apanhou a bola e ainda levou a raposa a dar uma volta pelo céu. Que grande aventura! Fim.' },
+    castelo: { art: '👑', text: 'No castelo, a princesa Inês estava aborrecida. Ninguém queria brincar com ela. Quando viu o dragão, sorriu. O que fazem os dois?', go: [['Uma festa', '🎉', 'festa'], ['Um banho de bolhas', '🛁', 'banho']] },
+    festa: { art: '💃', text: 'O Faísca encheu o salão de bolhas brilhantes. A princesa dançou, os guardas dançaram e até o rei dançou! Foi a melhor festa do reino. Fim.' },
+    banho: { art: '🛁', text: 'O Faísca soprou tantas bolhas que o castelo inteiro ficou a cheirar a sabão. A princesa riu tanto que lhe doeu a barriga. Desde esse dia, o Faísca é o dragão mais limpo do mundo. Fim.' } } },
+  { name: 'A Lua e o foguetão', icon: '🚀', color: '--blue', pics: { start: 'lua-foguetao', lua: 'lua-ratinho', saltos: 'lua-saltos', piquenique: 'lua-piquenique', saturno: 'lua-saturno', escorrega: 'lua-escorrega', ola: 'lua-extraterrestre' }, nodes: {
+    start: { art: '🚀', text: 'A Lua é uma menina que adora as estrelas. Hoje, a sua cadeira de rodas transformou-se num foguetão! Três, dois, um... descolar! Para onde voa a Lua?', go: [['Para a lua', '🌕', 'lua'], ['Para Saturno', '🪐', 'saturno']] },
+    lua: { art: '🐭', text: 'Na lua vivia um ratinho que comia queijo o dia todo. O ratinho perguntou: queres brincar comigo? A que brincam os dois?', go: [['Aos saltos gigantes', '🦘', 'saltos'], ['A um piquenique', '🧀', 'piquenique']] },
+    saltos: { art: '⭐', text: 'Na lua, cada salto é enorme! A Lua e o ratinho saltaram tão alto que tocaram numa estrela. A estrela fez-lhes cócegas e os dois riram até casa. Fim.' },
+    piquenique: { art: '🌍', text: 'Sentaram-se numa cratera e comeram queijo com bolachas. Lá em baixo, a Terra parecia um berlinde azul. A Lua acenou à sua família e prometeu voltar. Fim.' },
+    saturno: { art: '🪐', text: 'Saturno tem anéis gigantes feitos de gelo. Um extraterrestre verde acenou com as suas quatro mãos. O que faz a Lua?', go: [['Escorrega nos anéis', '🎢', 'escorrega'], ['Diz olá', '👋', 'ola']] },
+    escorrega: { art: '🎢', text: 'A Lua escorregou pelos anéis de Saturno a toda a velocidade. Uiii! O extraterrestre foi atrás dela. Foi o maior escorrega do universo. Fim.' },
+    ola: { art: '👽', text: 'A Lua disse olá, e o extraterrestre respondeu com um sorriso. Ensinou-lhe uma canção do espaço e ofereceu-lhe uma estrela para levar para casa. Fim.' } } },
+];
+function menuHistorias() {
+  show({ title: 'Histórias', say: 'Histórias. Tu escolhes o que acontece.', items: [
+    ...STORIES.map(s => ({ label: s.name, icon: pic(s.pics.start, s.icon), color: s.color, on: () => story(s, 'start') })), back(home) ] });
+}
+function story(s, id) {
+  const n = s.nodes[id];
+  const sc = s.pics && IMG[s.pics[id]];
+  show({ title: s.name, text: n.text, art: sc ? `<img class="scene" src="${sc}" alt="">` : n.art, say: n.text, cols: 2, items: n.go
+    ? n.go.map(([l, ic, to], i) => ({ label: l, icon: ic, color: i ? '--orange' : '--blue', on: () => { sfx.ok(); story(s, to); } }))
+    : [{ label: 'Ouvir outra vez', icon: '🔁', color: '--green', on: () => story(s, 'start') }, { label: 'Outra história', icon: '📖', color: '--orange', on: menuHistorias }] });
+}
+
+/* ---------- músicas ---------- */
+const SONGS = [
+  { name: 'Brilha, brilha, estrelinha', icon: '⭐', color: '--yellow',
+    ph: ['C C G G A A G_', 'F F E E D D C_', 'G G F F E E D_', 'G G F F E E D_', 'C C G G A A G_', 'F F E E D D C_'],
+    lines: ['Brilha, brilha, estrelinha,', 'quero ver-te a brilhar.', 'Lá no alto, lá no céu,', 'como um diamante a cintilar.', 'Brilha, brilha, estrelinha,', 'quero ver-te a brilhar.'] },
+  { name: 'Parabéns a você', icon: '🎂', color: '--red',
+    ph: ['G. G. A_ G_ C5_ B__', 'G. G. A_ G_ D5_ C5__', 'G. G. G5_ E5_ C5_ B_ A__', 'F F E5_ C5_ D5_ C5__'],
+    lines: ['Parabéns a você,', 'nesta data querida,', 'muitas felicidades,', 'muitos anos de vida!'] },
+  { name: 'Frei João', icon: '🔔', color: '--green',
+    ph: ['C D E C C D E C', 'E F G_ E F G_', 'G. A. G. F. E C G. A. G. F. E C', 'C G3 C_ C G3 C_'],
+    lines: ['Frei João, Frei João,', 'dormes tu? Dormes tu?', 'Tocam os sinos, tocam os sinos,', 'dlim, dlão, dlão.'] },
+];
+function playPhrase(str) { // nota = 1 tempo; "." = meio tempo; "_" = +1 tempo
+  let t = 0; const beat = .36;
+  for (const tok of str.split(' ')) {
+    const m = tok.match(/^([A-G]\d?)([._]*)$/); if (!m) continue;
+    let d = 1; for (const c of m[2]) d = c === '.' ? d / 2 : d + 1;
+    tone(F[m[1]], d * beat * .95, 'triangle', t, .3); t += d * beat;
+  }
+  return t;
+}
+// A música parou! — causa e efeito: a música para sozinha e o aluno faz com que continue
+function musicaParou() {
+  const notes = [];
+  SONGS.forEach(sg => sg.ph.forEach(p => p.split(' ').forEach(tok => {
+    const m = tok.match(/^([A-G]\d?)([._]*)$/); if (!m) return;
+    let d = 1; for (const c of m[2]) d = c === '.' ? d / 2 : d + 1; notes.push([F[m[1]], d]);
+  })));
+  const beat = .32, BASS = [F.C3, F.F3, F.G3, F.C3];
+  let pos = 0, beats = 0, playing = false, timer = null, stopAt = 0, rounds = 0, dancer = pickOne(SOUNDS)[0];
+  const tick = () => {
+    if (!playing) return;
+    if (performance.now() >= stopAt) return pause();
+    const [f, d] = notes[pos % notes.length]; pos++;
+    tone(f, d * beat * .9, 'triangle', 0, .26);
+    if (Math.floor(beats) % 2 === 0) drum(); else noise(.05, 0, .12, 5000);
+    if (Math.floor(beats) % 4 === 0) tone(BASS[Math.floor(beats / 4) % 4], beat * 1.8, 'sawtooth', 0, .1);
+    beats += d; timer = setTimeout(tick, d * beat * 1000);
+  };
+  const pause = () => { playing = false; clearTimeout(timer); draw(); };
+  const play = () => {
+    audio(); rounds++; playing = true;
+    stopAt = performance.now() + cfg.musicMs * (0.7 + Math.random() * 0.6);
+    if (rounds > 1) dancer = pickOne(SOUNDS.filter(x => x[0] !== dancer))[0];
+    draw(); tick();
+  };
+  const draw = first => show({ keep: !first,
+    title: playing ? 'A dançar!' : first ? 'A música parou!' : 'A música parou!',
+    text: playing ? 'Ouve a música…' : first ? 'Carrega para pôr a música a tocar. Quando ela parar, carrega outra vez! (Para sair, o educador usa o botão Início.)' : 'Carrega para a música continuar!',
+    art: playing ? `<span class="dance">${dancer}</span>` : `<span class="still">${dancer}</span>`,
+    say: playing ? '' : first ? 'Carrega para pôr a música a tocar!' : 'A música parou! Carrega para continuar!',
+    items: [{ label: playing ? 'A tocar…' : 'Música!', icon: playing ? '🎶' : '▶️', color: '--violet', disabled: playing, on: play }] });
+  draw(true);
+  leave = () => { playing = false; clearTimeout(timer); };
+}
+/* ---------- os meus vídeos: ficheiros do computador, guardados no navegador ---------- */
+const Vids = {
+  list: [], db: null,
+  async open() {
+    if (this.db) return this.db;
+    this.db = await new Promise((ok, no) => { const r = indexedDB.open('etj', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('videos', { keyPath: 'id' }); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+    return this.db;
+  },
+  async load() {
+    try { const db = await this.open();
+      this.list = await new Promise((ok, no) => { const r = db.transaction('videos').objectStore('videos').getAll(); r.onsuccess = () => ok(r.result || []); r.onerror = () => no(r.error); });
+      this.list.sort((a, b) => a.id - b.id);
+    } catch (e) {}
+    drawVidList();
+  },
+  async add(files) {
+    for (const f of files) {
+      const v = { id: Date.now() + Math.random(), name: f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' '), blob: f, type: f.type };
+      this.list.push(v);
+      try { const db = await this.open(); await new Promise((ok, no) => { const t = db.transaction('videos', 'readwrite'); t.objectStore('videos').put(v); t.oncomplete = ok; t.onerror = () => no(t.error); }); v.saved = true; }
+      catch (e) { v.saved = false; }
+    }
+    drawVidList();
+  },
+  async remove(id) {
+    this.list = this.list.filter(v => v.id !== id);
+    try { const db = await this.open(); db.transaction('videos', 'readwrite').objectStore('videos').delete(id); } catch (e) {}
+    drawVidList();
+  },
+};
+function drawVidList() {
+  const el = $('#vidList'); if (!el) return;
+  el.innerHTML = '';
+  if (!Vids.list.length && !(CAN_YT && YTL.length)) { el.innerHTML = '<small>Ainda não há vídeos nem músicas.</small>'; return; }
+  const t = document.createElement('table'); t.className = 'reg';
+  if (CAN_YT) YTL.forEach((y, i) => {
+    const tr = document.createElement('tr'), a = document.createElement('td'), b = document.createElement('td');
+    a.textContent = '▶️ ' + y.name + ' (YouTube)';
+    const x = document.createElement('button'); x.type = 'button'; x.className = 'ctl'; x.textContent = 'Remover'; x.onclick = () => { YTL.splice(i, 1); saveYT(); drawVidList(); };
+    b.append(x); tr.append(a, b); t.append(tr);
+  });
+  for (const v of Vids.list) {
+    const tr = document.createElement('tr'), a = document.createElement('td'), b = document.createElement('td');
+    a.textContent = (v.type && v.type.startsWith('audio') ? '🎵 ' : '🎬 ') + v.name + (v.saved === false ? ' (só até fechar a página)' : '');
+    const x = document.createElement('button'); x.type = 'button'; x.className = 'ctl'; x.textContent = 'Remover'; x.onclick = () => Vids.remove(v.id);
+    b.append(x); tr.append(a, b); t.append(tr);
+  }
+  el.append(t);
+}
+/* ---------- YouTube (só na versão alojada num site) ---------- */
+const CAN_YT = /^https?:$/.test(location.protocol) && !/claude/i.test(location.hostname);
+let YTL = [];
+// vídeos da turma que vêm já incluídos (o educador pode juntar mais nas Definições)
+const YT_BASE = [{ id: '2Bqe_0AeuuY', name: '' }];
+let ytStored = null;
+try { ytStored = JSON.parse(localStorage.getItem('etj-yt')); } catch (e) {}
+YTL = Array.isArray(ytStored) ? ytStored : YT_BASE.map(y => ({ ...y }));
+const saveYT = () => { try { localStorage.setItem('etj-yt', JSON.stringify(YTL)); } catch (e) {} };
+if (CAN_YT) YTL.forEach(async (y, i) => {
+  if (y.name) return;
+  y.name = 'Vídeo ' + (i + 1);
+  try { const r = await fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + y.id)); if (r.ok) { y.name = (await r.json()).title; saveYT(); drawVidList(); } } catch (e) {}
+});
+const ytId = u => { const m = String(u).trim().match(/(?:youtu\.be\/|[?&]v=|\/(?:embed|shorts|live)\/)([A-Za-z0-9_-]{11})/) || String(u).trim().match(/^([A-Za-z0-9_-]{11})$/); return m && m[1]; };
+async function addYT() {
+  const id = ytId($('#ytUrl').value), msg = $('#ytMsg');
+  if (!id) { msg.textContent = 'Não reconheci este link. Copie o endereço do vídeo no YouTube (botão Partilhar) e cole-o aqui.'; return; }
+  let name = $('#ytName').value.trim();
+  if (!name) { try { const r = await fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id)); if (r.ok) name = (await r.json()).title; } catch (e) {} }
+  YTL.push({ id, name: name || 'Vídeo ' + (YTL.length + 1) }); saveYT();
+  $('#ytUrl').value = ''; $('#ytName').value = ''; msg.textContent = 'Juntei: ' + YTL[YTL.length - 1].name; drawVidList();
+}
+let ytReady = null;
+const loadYT = () => ytReady || (ytReady = new Promise((ok, no) => {
+  if (window.YT && YT.Player) return ok();
+  window.onYouTubeIframeAPIReady = ok;
+  const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.onerror = () => { ytReady = null; no(); }; document.head.append(sc);
+}));
+function playYT(v) {
+  let nextStop = 0, done = false, player = null, poll = null;
+  show({ title: v.name, text: 'A preparar o vídeo…', art: '<div class="vid ytwrap"><div id="ytEl"></div></div>',
+    items: [{ label: 'Começar', icon: '▶️', color: '--violet', disabled: true, on: () => go() }] });
+  const txt = stage.querySelector('.head .text'), btn = stage.querySelector('[data-t]'), lb = btn.querySelector('.lb'), ic = btn.querySelector('.ic');
+  const setState = (playing, t) => {
+    btn.disabled = playing; lb.textContent = playing ? 'A tocar…' : (t || 'Continuar'); ic.textContent = playing ? '🎶' : '▶️';
+    btn.dataset.t = playing ? 'A tocar' : (t || 'Continuar'); txt.textContent = playing ? 'Ouve e vê…' : (t ? 'Carrega para começar!' : 'Parou! Carrega para continuar!');
+  };
+  const go = () => {
+    if (done || !player) return;
+    nextStop = player.getCurrentTime() + (cfg.musicMs / 1000) * (0.7 + Math.random() * 0.6);
+    player.playVideo(); setState(true); Input.refresh();
+  };
+  loadYT().then(() => {
+    if (done) return;
+    player = new YT.Player('ytEl', { videoId: v.id, host: 'https://www.youtube-nocookie.com',
+      playerVars: { controls: 0, rel: 0, modestbranding: 1, playsinline: 1, disablekb: 1, fs: 0, iv_load_policy: 3 },
+      events: {
+        onReady: () => { if (done) return; setState(false, 'Começar'); Input.hold(); say('Carrega para começar!', () => Input.release()); },
+        onStateChange: e => { if (e.data === YT.PlayerState.ENDED && !done) { done = true; win(() => playYT(v), menuVideos, 'Chegaste ao fim! Muito bem!'); } },
+        onError: () => { txt.textContent = 'Este vídeo não pode ser mostrado fora do YouTube (o autor não o permite). Escolha outro vídeo.'; btn.disabled = true; Input.refresh(); },
+      } });
+    poll = setInterval(() => {
+      if (!player || !player.getPlayerState || done) return;
+      if (player.getPlayerState() === YT.PlayerState.PLAYING && player.getCurrentTime() >= nextStop && player.getDuration() - player.getCurrentTime() > 2) {
+        player.pauseVideo(); setState(false); sfx.tick(); Input.hold(); say('Parou! Carrega para continuar!', () => Input.release());
+      }
+    }, 250);
+  }).catch(() => { txt.textContent = 'Não foi possível ligar ao YouTube. Verifique a ligação à internet.'; });
+  leave = () => { done = true; clearInterval(poll); try { player && player.destroy(); } catch (e) {} };
+}
+
+function menuVideos() {
+  const L = [...Vids.list, ...(CAN_YT ? YTL.map(y => ({ yt: y })) : [])];
+  show({ title: 'Os meus vídeos', say: L.length ? 'Os meus vídeos. Escolhe um.' : '',
+    text: L.length ? '' : 'Ainda não há vídeos. O educador pode juntá-los em Definições → Os meus vídeos e músicas.',
+    cols: 3, items: [...L.map((v, i) => v.yt
+      ? { label: v.yt.name, icon: `<img class="pic" src="https://i.ytimg.com/vi/${v.yt.id}/mqdefault.jpg" alt="">`, color: PAL[i % 4], on: () => playYT(v.yt) }
+      : { label: v.name, icon: v.type && v.type.startsWith('audio') ? '🎵' : '🎬', color: PAL[i % 4], on: () => playVideo(v) }), back(menuMusicas)] });
+}
+function playVideo(v) {
+  const isAudio = v.type && v.type.startsWith('audio');
+  const url = URL.createObjectURL(v.blob);
+  let nextStop = 0, started = false, done = false;
+  const dancer = pickOne(SOUNDS)[0];
+  show({ title: v.name, text: 'Carrega para começar!',
+    art: isAudio ? `<span class="still" id="vDance">${dancer}</span>` : '<video class="vid" id="vEl" playsinline></video>',
+    say: 'Carrega para começar!',
+    items: [{ label: 'Começar', icon: '▶️', color: '--violet', on: () => go() }] });
+  const media = isAudio ? new Audio() : $('#vEl'); media.src = url;
+  const txt = stage.querySelector('.head .text'), btn = stage.querySelector('[data-t]'), lb = btn.querySelector('.lb'), ic = btn.querySelector('.ic');
+  const dance = $('#vDance');
+  const setState = playing => {
+    btn.disabled = playing; lb.textContent = playing ? 'A tocar…' : 'Continuar'; ic.textContent = playing ? '🎶' : '▶️';
+    btn.dataset.t = playing ? 'A tocar' : 'Continuar'; if (dance) dance.className = playing ? 'dance' : 'still';
+    txt.textContent = playing ? 'Ouve e vê…' : 'Parou! Carrega para continuar!';
+  };
+  const go = () => {
+    if (done) return;
+    nextStop = media.currentTime + (cfg.musicMs / 1000) * (0.7 + Math.random() * 0.6);
+    const p = media.play(); if (p && p.catch) p.catch(() => { setState(false); txt.textContent = 'Este ficheiro não pôde ser reproduzido. Experimente outro formato (MP4 ou MP3).'; });
+    started = true; setState(true); Input.refresh();
+  };
+  media.addEventListener('timeupdate', () => {
+    if (!started || media.paused || done) return;
+    if (media.currentTime >= nextStop && media.duration - media.currentTime > 2) {
+      media.pause(); setState(false); sfx.tick(); Input.hold(); say('Parou! Carrega para continuar!', () => Input.release());
+    }
+  });
+  media.addEventListener('ended', () => { done = true; win(() => playVideo(v), menuVideos, 'Chegaste ao fim! Muito bem!'); });
+  leave = () => { done = true; try { media.pause(); } catch (e) {} media.removeAttribute('src'); try { media.load(); } catch (e) {} URL.revokeObjectURL(url); };
+}
+
+function menuMusicas() {
+  show({ title: 'Músicas', say: 'Músicas. Escolhe o que queres tocar.', cols: 3, items: [
+    { label: 'Os meus vídeos', icon: '🎬', color: '--blue', on: menuVideos },
+    { label: 'A música parou!', icon: '⏯️', color: '--red', on: musicaParou },
+    ...SONGS.map(s => ({ label: s.name, icon: s.icon, color: s.color, on: () => song(s) })),
+    { label: 'Instrumentos', icon: '🥁', color: '--orange', on: instruments },
+    { label: 'A minha banda', icon: '🎧', color: '--violet', on: band },
+    back(home) ] });
+}
+function song(s) {
+  let i = 0;
+  const draw = playing => show({ title: s.name, text: i ? s.lines[i - 1] : 'Tu és o músico. Cada toque faz soar um bocadinho da canção.',
+    art: '⭐'.repeat(i) + '☆'.repeat(s.ph.length - i), artCls: 'small',
+    say: !i && !playing && 'Tu és o músico. Toca para começar.',
+    items: [{ label: 'Tocar', icon: '🎵', color: s.color, disabled: playing, on() {
+      const d = playPhrase(s.ph[i]); i++; draw(true);
+      setTimeout(() => { if (i >= s.ph.length) win(() => song(s), menuMusicas, 'Tocaste a canção toda!'); else draw(false); }, d * 1000 + 200);
+    } }] });
+  draw(false);
+}
+function instruments() {
+  const I = [
+    ['Tambor', '🥁', '--red', () => { drum(); drum(.18); }],
+    ['Sino', '🔔', '--yellow', () => { tone(1320, 1.2, 'sine', 0, .25); tone(1980, .9, 'sine', 0, .1); }],
+    ['Piano', '🎹', '--blue', () => [F.C, F.E, F.G, F.C5].forEach((f, i) => tone(f, .5, 'triangle', i * .13, .28))],
+    ['Trompete', '🎺', '--orange', () => { tone(F.G, .18, 'sawtooth', 0, .15); tone(F.C5, .18, 'sawtooth', .2, .15); tone(F.E5, .5, 'sawtooth', .4, .15); }],
+    ['Guitarra', '🎸', '--green', () => [F.C3 * 2 / 2, F.G3, F.C, F.E, F.G].forEach((f, i) => tone(f, 1, 'sawtooth', i * .04, .1))],
+    ['Maracas', '🎉', '--violet', () => [0, .14, .28, .36].forEach(t => noise(.08, t, .35, 3000))],
+  ];
+  show({ title: 'Instrumentos', say: 'Escolhe um instrumento para tocar.', cols: 4, items: [...I.map(([l, ic, c, f]) => ({ label: l, icon: ic, color: c, on: f })), back(menuMusicas)] });
+}
+function band() {
+  const on = { batida: false, baixo: false, melodia: false }; let s = 0;
+  const mel = ['E', 0, 'G', 0, 'A', 'G', 'E', 0, 'D', 0, 'E', 'G', 'E', 'D', 'C', 0], bass = ['C3', 'C3', 'F3', 'G3'];
+  const id = setInterval(() => {
+    if (on.batida) { if (s % 4 === 0) drum(); if (s % 2 === 1) noise(.05, 0, .15, 5000); if (s % 8 === 4) noise(.12, 0, .25, 1500); }
+    if (on.baixo && s % 4 === 0) tone(F[bass[(s / 4) | 0]], .45, 'sawtooth', 0, .18);
+    if (on.melodia && mel[s]) tone(F[mel[s]] * 2, .22, 'triangle', 0, .22);
+    s = (s + 1) % 16;
+  }, 230);
+  const L = [['batida', 'Bateria', '🥁', '--red'], ['baixo', 'Baixo', '🎸', '--green'], ['melodia', 'Melodia', '🎹', '--blue']];
+  const draw = first => show({ keep: !first, title: 'A minha banda', text: 'Liga e desliga os músicos para fazeres a tua música.', say: first && 'Liga os músicos para fazeres a tua música.', cols: 4,
+    items: [...L.map(([k, n, ic, c]) => ({ label: (on[k] ? 'Parar ' : 'Ligar ') + n.toLowerCase(), icon: on[k] ? ic + '🔊' : ic, color: on[k] ? c : '--muted', on() { on[k] = !on[k]; draw(); } })), back(menuMusicas)] });
+  draw(true); leave = () => clearInterval(id);
+}
+
+/* ---------- definições do educador ---------- */
+const setEl = $('#settings'), modeBtns = $('#modeBtns');
+for (const [k, m] of Object.entries(MODES)) {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'ctl'; b.dataset.k = k; b.textContent = m.i + ' ' + m.n;
+  b.onclick = () => setMode(k, !stage.querySelector('[data-t]') || stage.dataset.sel === '1'); modeBtns.append(b);
+}
+const levelBtns = $('#levelBtns');
+[1, 2, 3, 4].forEach(n => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'ctl'; b.dataset.n = n;
+  b.textContent = n === 1 ? '1 (sem erro)' : String(n);
+  b.onclick = () => { cfg.level = n; save(); syncSettings(); }; levelBtns.append(b);
+});
+let clearArm = false;
+function drawReg() {
+  const el = $('#reg'), ks = Object.keys(REG);
+  if (!ks.length) { el.innerHTML = '<small>Ainda não há respostas registadas. Os jogos de Aprender guardam aqui quantas perguntas o aluno acertou à primeira.</small>'; return; }
+  el.innerHTML = '<table class="reg"><thead><tr><th>Atividade</th><th>À primeira</th><th>Perguntas</th></tr></thead><tbody>' +
+    ks.map(k => `<tr><td>${k}</td><td>${REG[k].f}</td><td>${REG[k].q}</td></tr>`).join('') + '</tbody></table>';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'ctl'; b.textContent = clearArm ? 'Carregue outra vez para apagar' : 'Apagar registo';
+  b.onclick = () => { if (!clearArm) { clearArm = true; return drawReg(); } REG = {}; clearArm = false; try { localStorage.removeItem('etj-reg'); } catch (e) {} drawReg(); };
+  el.append(b);
+}
+function syncSettings() {
+  levelBtns.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.n === cfg.level));
+  drawReg();
+  modeBtns.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === cfg.mode));
+  $('#rScan').value = cfg.scanMs / 1000; $('#vScan').textContent = (cfg.scanMs / 1000).toFixed(1).replace('.', ',') + ' s';
+  $('#rMus').value = cfg.musicMs / 1000; $('#vMus').textContent = Math.round(cfg.musicMs / 1000) + ' s';
+  $('#rDwell').value = cfg.dwellMs / 1000; $('#vDwell').textContent = (cfg.dwellMs / 1000).toFixed(1).replace('.', ',') + ' s';
+  $('#rSens').value = cfg.sens; $('#vSens').textContent = cfg.sens;
+  $('#cRead').checked = cfg.read;
+  $('#cScan').checked = cfg.scan !== false; $('#rScan').disabled = cfg.scan === false;
+}
+$('#rScan').oninput = e => { cfg.scanMs = e.target.value * 1000; save(); syncSettings(); };
+$('#rMus').oninput = e => { cfg.musicMs = e.target.value * 1000; save(); syncSettings(); };
+$('#rDwell').oninput = e => { cfg.dwellMs = e.target.value * 1000; save(); syncSettings(); };
+$('#rSens').oninput = e => { cfg.sens = +e.target.value; save(); syncSettings(); };
+$('#cScan').onchange = e => { cfg.scan = e.target.checked; save(); syncSettings(); drawChip(); };
+$('#cRead').onchange = e => { cfg.read = e.target.checked; save(); if (!cfg.read) try { speechSynthesis.cancel(); } catch (x) {} };
+$('#fVid').onchange = e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) Vids.add(fs); };
+Vids.load();
+if (CAN_YT) { $('#ytBox').hidden = false; $('#ytAdd').onclick = addYT; } else $('#ytOff').hidden = false;
+$('#btnSet').onclick = () => { settingsOpen = true; setEl.hidden = false; clearTimeout(Input.timer); syncSettings(); };
+$('#btnClose').onclick = () => { settingsOpen = false; setEl.hidden = true; if (!Input.held) Input.refresh(); };
+$('#btnFull').onclick = () => { try { (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => {}); } catch (e) {} };
+$('#btnHome').onclick = () => { cfg.mode ? home() : start(); };
+try { speechSynthesis.getVoices(); } catch (e) {}
+
+function start() { stage.dataset.sel = '1'; modeSelect(); }
+const _home = home; home = function () { stage.dataset.sel = '0'; _home(); };
+syncSettings(); start();
+})();
+</script>

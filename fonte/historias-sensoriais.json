@@ -1,0 +1,1350 @@
+[
+ {
+  "title": "O Elefante que Não Gostava de Banho",
+  "emoji": "🐘",
+  "tag": "Água, espuma e surpresas",
+  "cover": "hs00-capa",
+  "images": [
+   "hs00-capa",
+   "hs00-c2",
+   "hs00-c3",
+   "hs00-c4",
+   "hs00-c5",
+   "hs00-c6"
+  ],
+  "scenes": [
+   {
+    "title": "Um banho? Nem pensar!",
+    "story": [
+     "Tico ouviu uma palavra que não lhe agradava: banho!",
+     "— Banho? Mas eu já estou limpinho!",
+     "Olhou para a banheira e para o patinho amarelo.",
+     "— Bem... talvez só um bocadinho!"
+    ],
+    "action": "Apresenta uma toalha seca e ajuda a explorar o tecido, começando pelo dorso da mão.",
+    "materials": [
+     "Toalha macia",
+     "Toalha seca"
+    ]
+   },
+   {
+    "title": "A esponja cómica",
+    "story": [
+     "O patinho amarelo mostrou uma esponja.",
+     "— Isto é um queijo? — perguntou Tico.",
+     "O patinho fez: quá, quá, quá!",
+     "— Ah! É uma esponja! — riu-se Tico."
+    ],
+    "action": "Ajuda o aluno a explorar uma esponja seca e outra ligeiramente húmida. Apresenta uma de cada vez, deixando tempo para sentir as diferenças.",
+    "materials": [
+     "Esponja macia",
+     "Recipiente com água"
+    ]
+   },
+   {
+    "title": "Plim, plim!",
+    "story": [
+     "O patinho mergulhou na água.",
+     "Plim! Caiu uma gotinha. Depois outra: plim, plim!",
+     "Tico levantou as patas e fez splash!",
+     "— Afinal, isto faz cócegas!"
+    ],
+    "action": "Faz ouvir pequenas gotas de água a cair numa taça. Se for adequado, deixa o aluno sentir um pano ligeiramente húmido na mão, antecipando o contacto.",
+    "materials": [
+     "Copo com água",
+     "Taça",
+     "Pano húmido"
+    ]
+   },
+   {
+    "title": "A montanha de espuma",
+    "story": [
+     "A espuma cresceu, cresceu, cresceu!",
+     "Tico ficou com espuma na cabeça e no focinho.",
+     "— Olhem! Tenho uma barba de nuvem!",
+     "E soltou uma gargalhada."
+    ],
+    "action": "Apresenta espuma própria para contacto com a pele e previamente autorizada. Explora pequenas quantidades com a mão.",
+    "materials": [
+     "Espuma hipoalergénica",
+     "Tabuleiro",
+     "Toalha"
+    ]
+   },
+   {
+    "title": "O chuveiro cantor",
+    "story": [
+     "Tico encheu a tromba com um pouquinho de água.",
+     "— Chuá, chuá, chuá! — cantou.",
+     "O patinho respondeu: quá, quá, quá!",
+     "A banheira transformou-se numa orquestra."
+    ],
+    "action": "Alterna o som suave de água a correr com batidas leves num recipiente. Faz pausas para que o aluno possa responder ou pedir para parar.",
+    "materials": [
+     "Água",
+     "Recipiente",
+     "Colher de plástico"
+    ]
+   },
+   {
+    "title": "O elefante perfumado",
+    "story": [
+     "Tico saiu da banheira e enrolou-se numa toalha amarela.",
+     "— Que toalha tão quentinha e fofinha!",
+     "— Afinal, adoro banhos... mas só às terças!",
+     "E todos se riram."
+    ],
+    "action": "Ajuda a explorar a textura de uma toalha seca e macia nas mãos. Termina com uma despedida sonora curta e previsível.",
+    "materials": [
+     "Toalha macia",
+     "Pano seco"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "A Casinha do Gato Tobias",
+  "emoji": "🐱",
+  "tag": "Texturas: rugoso, madeira, liso, fofo e áspero",
+  "cover": "hs01-capa",
+  "images": [
+   "hs01-capa",
+   "hs01-c2",
+   "hs01-c3",
+   "hs01-c4",
+   "hs01-c5",
+   "hs01-c6"
+  ],
+  "scenes": [
+   {
+    "title": "O gato precisa de uma casa",
+    "story": [
+     "O Tobias era um gatinho muito brincalhão.",
+     "Um dia, entrou dentro de uma caixa.",
+     "O Tomás olhou para ele e sorriu.",
+     "— Já sei! Vou fazer uma casinha para o Tobias!"
+    ],
+    "action": "Apresenta uma caixa de cartão e ajuda o aluno a explorar a sua forma, as paredes e o interior.",
+    "materials": [
+     "Caixa de cartão"
+    ]
+   },
+   {
+    "title": "As paredes rugosas",
+    "story": [
+     "Tomás começou pelas paredes.",
+     "Pegou num cartão com ondinhas.",
+     "— Estas paredes são rugosas!",
+     "O Tobias aproximou-se e cheirou a casinha.",
+     "— Miau!"
+    ],
+    "action": "Ajuda o aluno a explorar o cartão cartonado, percorrendo os relevos com a mão em diferentes direções.",
+    "materials": [
+     "Cartão cartonado"
+    ]
+   },
+   {
+    "title": "O telhado de madeira",
+    "story": [
+     "Agora faltava o telhado.",
+     "O Tomás encontrou uma peça de madeira.",
+     "— Este telhado é forte!",
+     "Passou a mão por cima.",
+     "— Toc, toc!"
+    ],
+    "action": "Explora um pedaço de madeira lisa ou levemente texturada. Bate de leve para ouvir também o som.",
+    "materials": [
+     "Pedaço de madeira",
+     "Casinha"
+    ]
+   },
+   {
+    "title": "A janela brilhante",
+    "story": [
+     "Depois, Tomás fez uma janela.",
+     "Pegou em papel de alumínio.",
+     "— Que janela tão lisa e brilhante!",
+     "Quando tocou, ouviu-se: CRIC! CRAC!",
+     "O Tobias ficou muito curioso."
+    ],
+    "action": "Ajuda o aluno a explorar o papel de alumínio liso, fixado numa base, e depois a amarrotar uma folha para ouvir o som.",
+    "materials": [
+     "Papel de alumínio",
+     "Cartão de suporte"
+    ]
+   },
+   {
+    "title": "A cama fofinha e o tapete áspero",
+    "story": [
+     "A casinha estava quase pronta.",
+     "Lá dentro, Tomás colocou uma cama muito fofinha.",
+     "Era feita de algodão.",
+     "À entrada, pôs um tapetinho áspero para o Tobias limpar as patinhas.",
+     "— Agora a tua casa está perfeita!"
+    ],
+    "action": "Explora primeiro o algodão fofo e depois a lixa, explicando que é o tapetinho áspero da entrada.",
+    "materials": [
+     "Algodão",
+     "Lixa"
+    ]
+   },
+   {
+    "title": "A casinha está pronta!",
+    "story": [
+     "A casinha do Tobias ficou pronta.",
+     "Tinha paredes rugosas, um telhado de madeira, uma janela lisa e brilhante, uma cama fofinha e um tapete áspero à entrada.",
+     "O Tobias entrou, deu uma voltinha e deitou-se.",
+     "— Boa noite, Tobias!"
+    ],
+    "action": "Apresenta a casinha construída e ajuda o aluno a revisitar as diferentes texturas. Se possível, utiliza um gato de peluche para representar o Tobias.",
+    "materials": [
+     "Casinha construída",
+     "Cartão cartonado",
+     "Madeira",
+     "Papel de alumínio",
+     "Algodão",
+     "Lixa",
+     "Gato de peluche"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "O Pinguim que Tinha Calor",
+  "emoji": "🐧",
+  "tag": "Fresco, morno e tecidos",
+  "cover": "hs02-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "Um cachecol enorme",
+    "story": [
+     "Pipo vivia na neve, mas tinha calor.",
+     "— Quem me pôs este cachecol gigante?",
+     "Puxou uma ponta... e outra!"
+    ],
+    "action": "Apresenta um cachecol de tecido macio, sem o colocar à volta do pescoço.",
+    "materials": [
+     "Cachecol macio",
+     "Tecido"
+    ]
+   },
+   {
+    "title": "A neve que não molha",
+    "story": [
+     "Pipo encontrou uma montanha fofinha.",
+     "— Neve? Não! É algodão!",
+     "E começou a rir."
+    ],
+    "action": "Explora um tecido branco fofo ou bolas de tecido grandes, sem fibras soltas.",
+    "materials": [
+     "Tecido felpudo branco",
+     "Taça"
+    ]
+   },
+   {
+    "title": "O vento gelado",
+    "story": [
+     "— Fuuuu! — soprou o vento.",
+     "Pipo abriu as asas.",
+     "— Agora sim, que fresquinho!"
+    ],
+    "action": "Cria uma brisa suave com leque a uma distância confortável.",
+    "materials": [
+     "Leque",
+     "Pano leve"
+    ]
+   },
+   {
+    "title": "Uma pedra fresca",
+    "story": [
+     "Pipo tocou numa pedra lisa e fresca.",
+     "— Ui! Parece um cubo de gelo!",
+     "Mas era só uma pedra."
+    ],
+    "action": "Oferece um objeto liso ligeiramente fresco, nunca gelado, com proteção e supervisão.",
+    "materials": [
+     "Pedra lisa grande",
+     "Pano protetor"
+    ]
+   },
+   {
+    "title": "A manta quentinha",
+    "story": [
+     "A avó trouxe uma manta.",
+     "— Mas, avó, eu já tenho calor!",
+     "Pipo fez uma cara muito engraçada."
+    ],
+    "action": "Compara a manta à temperatura ambiente com o tecido fresco anterior, sem aplicar calor direto.",
+    "materials": [
+     "Manta macia",
+     "Tecido fresco"
+    ]
+   },
+   {
+    "title": "O desfile de inverno",
+    "story": [
+     "Pipo escolheu só o cachecol.",
+     "— Vou desfilar na neve!",
+     "E escorregou de barriga: uuuuh!"
+    ],
+    "action": "Faz deslizar um tecido sobre a mesa e acompanha com som de deslizamento.",
+    "materials": [
+     "Cachecol",
+     "Tecido liso"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "O Pirata e o Tesouro Misterioso",
+  "emoji": "🏴‍☠️",
+  "tag": "Mistério, texturas e sons do mar",
+  "cover": "hs03-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "O mapa amarrotado",
+    "story": [
+     "O pirata Bartolomeu encontrou um mapa.",
+     "— Arrr! Um tesouro escondido!",
+     "Mas o mapa fazia: crac, crac!"
+    ],
+    "action": "Ajuda a explorar papel grosso amarrotado, sem arestas cortantes.",
+    "materials": [
+     "Papel grosso",
+     "Mapa em relevo"
+    ]
+   },
+   {
+    "title": "O barco baloiça",
+    "story": [
+     "O barco abanou de um lado para o outro.",
+     "— Marinheiros! Segurem-se!",
+     "Splash! Fez o mar."
+    ],
+    "action": "Move suavemente um tabuleiro com tecido, sem movimentar o corpo da aluna.",
+    "materials": [
+     "Tabuleiro",
+     "Tecido azul",
+     "Som de água"
+    ]
+   },
+   {
+    "title": "As chaves barulhentas",
+    "story": [
+     "O pirata ouviu: trrim, trrim!",
+     "— Quem anda aí?",
+     "Eram as chaves do tesouro."
+    ],
+    "action": "Apresenta um molho de chaves grandes de brincar, com som suave e sem peças pequenas.",
+    "materials": [
+     "Chaves grandes de brincar",
+     "Argola"
+    ]
+   },
+   {
+    "title": "Uma caixa fechada",
+    "story": [
+     "— Encontrei o baú! — gritou Bartolomeu.",
+     "Puxou a tampa. Nada.",
+     "Empurrou. Nada.",
+     "— Que baú teimoso!"
+    ],
+    "action": "Ajuda a sentir a superfície e a tampa de uma caixa grande e segura.",
+    "materials": [
+     "Caixa com tampa",
+     "Tecido"
+    ]
+   },
+   {
+    "title": "O tesouro brilhante",
+    "story": [
+     "Finalmente... clic!",
+     "Dentro havia tecidos, conchas grandes e uma medalha.",
+     "— Arrr! Que tesouro magnífico!"
+    ],
+    "action": "Explora 2 ou 3 objetos grandes e seguros, um de cada vez. Evita conchas cortantes.",
+    "materials": [
+     "Caixa",
+     "Tecido acetinado",
+     "Objeto liso grande"
+    ]
+   },
+   {
+    "title": "O verdadeiro tesouro",
+    "story": [
+     "O pirata encontrou uma nota.",
+     "— O verdadeiro tesouro é brincar juntos!",
+     "Bartolomeu deu uma gargalhada."
+    ],
+    "action": "Repete o som das chaves e permite tocar no objeto preferido.",
+    "materials": [
+     "Chaves de brincar",
+     "Caixa"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "A Bruxa das Poções Malucas",
+  "emoji": "🧙‍♀️",
+  "tag": "Espuma, sons e descobertas",
+  "cover": "hs04-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "A receita desaparecida",
+    "story": [
+     "A bruxa Lili queria fazer uma poção.",
+     "— Onde escondi a receita?",
+     "Procurou no chapéu... e saiu uma meia!"
+    ],
+    "action": "Apresenta um chapéu de tecido e uma meia macia para explorar.",
+    "materials": [
+     "Chapéu de tecido",
+     "Meia macia"
+    ]
+   },
+   {
+    "title": "A colher gigante",
+    "story": [
+     "Lili mexeu a panela.",
+     "— Mexe, mexe, mexe!",
+     "Mas a colher era maior do que a panela!"
+    ],
+    "action": "Ajuda a sentir uma colher grande e a mexer num recipiente vazio.",
+    "materials": [
+     "Colher de pau",
+     "Taça"
+    ]
+   },
+   {
+    "title": "Bolhas por todo o lado",
+    "story": [
+     "Blub, blub, blub!",
+     "A poção fez bolhinhas.",
+     "— Parece que está a rir! — disse Lili."
+    ],
+    "action": "Faz bolhas numa taça com uma colher, sem salpicos junto da face.",
+    "materials": [
+     "Taça",
+     "Água",
+     "Colher"
+    ]
+   },
+   {
+    "title": "A poção fofinha",
+    "story": [
+     "A poção ficou coberta de espuma.",
+     "— Fiz uma nuvem roxa!",
+     "Lili bateu palmas, espantada."
+    ],
+    "action": "Apresenta uma pequena quantidade de espuma segura para contacto cutâneo, após verificar tolerância.",
+    "materials": [
+     "Espuma adequada",
+     "Tabuleiro",
+     "Toalha"
+    ]
+   },
+   {
+    "title": "O feitiço do sino",
+    "story": [
+     "Lili disse: plim!",
+     "Um sininho respondeu: plim, plim!",
+     "— Uma poção musical!"
+    ],
+    "action": "Produz toques breves e suaves num sino e deixa tempo para resposta.",
+    "materials": [
+     "Sino suave",
+     "Colher"
+    ]
+   },
+   {
+    "title": "A poção da alegria",
+    "story": [
+     "Lili provou o cheiro da poção.",
+     "— Humm! Cheira a festa!",
+     "E toda a cozinha pareceu sorrir."
+    ],
+    "action": "Apresenta, se adequado, aroma alimentar muito suave a distância confortável.",
+    "materials": [
+     "Baunilha suave",
+     "Recipiente seguro"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "O Urso que Perdeu o Cobertor",
+  "emoji": "🐻",
+  "tag": "Tecidos e sons da floresta",
+  "cover": "hs05-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "O urso acordou",
+    "story": [
+     "O urso Bento abriu um olho.",
+     "— Onde está o meu cobertor?",
+     "Procurou debaixo da almofada."
+    ],
+    "action": "Oferece uma almofada macia e um pequeno tecido.",
+    "materials": [
+     "Almofada",
+     "Pano macio"
+    ]
+   },
+   {
+    "title": "O cobertor faz cócegas",
+    "story": [
+     "Bento encontrou um pano fofinho.",
+     "— Humm... será o meu cobertor?",
+     "Fez cócegas no focinho."
+    ],
+    "action": "Explora um tecido felpudo, com toque leve e consentido na mão.",
+    "materials": [
+     "Tecido felpudo",
+     "Toalha"
+    ]
+   },
+   {
+    "title": "Folhas no caminho",
+    "story": [
+     "Lá fora ouviu: crac, crac!",
+     "Eram folhas a dançar no vento.",
+     "— O meu cobertor voou?"
+    ],
+    "action": "Amassa papel ou folhas secas dentro de um saco fechado para ouvir o ruído.",
+    "materials": [
+     "Saco sensorial fechado",
+     "Folhas secas"
+    ]
+   },
+   {
+    "title": "A manta áspera",
+    "story": [
+     "Bento tocou numa manta áspera.",
+     "— Esta pica um bocadinho!",
+     "Devolveu-a à raposa."
+    ],
+    "action": "Apresenta duas texturas contrastantes, evitando materiais que irritem a pele.",
+    "materials": [
+     "Tecido rugoso",
+     "Tecido macio"
+    ]
+   },
+   {
+    "title": "A manta verdadeira",
+    "story": [
+     "Debaixo da árvore estava o cobertor!",
+     "— Encontrei-te! — gritou Bento.",
+     "Era quente e muito macio."
+    ],
+    "action": "Permite explorar a manta preferida, sem cobrir a face ou limitar movimentos.",
+    "materials": [
+     "Manta macia"
+    ]
+   },
+   {
+    "title": "Boa noite, Bento",
+    "story": [
+     "Bento abraçou o cobertor.",
+     "— Agora sim. Boa noite, floresta!",
+     "Os pássaros cantaram baixinho."
+    ],
+    "action": "Reproduz um som suave de pássaros e termina com o toque familiar da manta.",
+    "materials": [
+     "Manta",
+     "Som suave de pássaros"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "O Robô que Ficou Maluco",
+  "emoji": "🤖",
+  "tag": "Ritmo, botões e vibração",
+  "cover": "hs06-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "Olá, eu sou o R-7",
+    "story": [
+     "O robô acendeu os olhos.",
+     "— BIP! BIP! Sou o R-7!",
+     "Deu uma volta e fez uma vénia."
+    ],
+    "action": "Faz dois bipes com a voz e apresenta um objeto de plástico liso.",
+    "materials": [
+     "Objeto plástico liso",
+     "Cartão"
+    ]
+   },
+   {
+    "title": "O botão saltitão",
+    "story": [
+     "R-7 descobriu um botão vermelho.",
+     "— BIP! Posso carregar?",
+     "Carregou... e dançou!"
+    ],
+    "action": "Ajuda a explorar um interruptor grande e acessível, sem exigir ativação independente.",
+    "materials": [
+     "Botão grande",
+     "Superfície estável"
+    ]
+   },
+   {
+    "title": "Toc, toc, toc",
+    "story": [
+     "O robô bateu os pés.",
+     "Toc, toc, toc!",
+     "— Sou uma bateria musical!"
+    ],
+    "action": "Reproduz batidas leves num tambor ou mesa, em ritmos lentos.",
+    "materials": [
+     "Tambor suave",
+     "Mesa"
+    ]
+   },
+   {
+    "title": "O motor faz bzzz",
+    "story": [
+     "De repente, o motor fez BZZZZ!",
+     "— Ui! Tenho comichão nos parafusos!"
+    ],
+    "action": "Imita vibração com a voz; só utiliza vibração indireta suave se for apropriada.",
+    "materials": [
+     "Caixa plástica",
+     "Escova de dentes elétrica opcional"
+    ]
+   },
+   {
+    "title": "O robô precisa de descanso",
+    "story": [
+     "R-7 ficou cansado.",
+     "— Biiip... biiip...",
+     "O som ficou cada vez mais lento."
+    ],
+    "action": "Reduz progressivamente o ritmo dos bipes e deixa uma pausa silenciosa.",
+    "materials": [
+     "Voz do professor",
+     "Botão grande"
+    ]
+   },
+   {
+    "title": "Reiniciar!",
+    "story": [
+     "— Já estou pronto! — anunciou R-7.",
+     "Fez uma dança muito engraçada.",
+     "— Até à próxima, humanos!"
+    ],
+    "action": "Repete dois bipes e o toque no botão, ou termina se o aluno escolher parar.",
+    "materials": [
+     "Botão grande",
+     "Tambor"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "A Festa dos Balões",
+  "emoji": "🎈",
+  "tag": "Festa e música suave",
+  "cover": "hs07-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "Hoje há festa!",
+    "story": [
+     "O Tomás preparou uma festa surpresa.",
+     "— Falta uma coisa... os balões!",
+     "Olhou à sua volta, intrigado."
+    ],
+    "action": "Apresenta um balão não insuflado apenas dentro de um invólucro fechado e seguro, ou uma bola macia como alternativa.",
+    "materials": [
+     "Bola macia",
+     "Saco fechado"
+    ]
+   },
+   {
+    "title": "O balão vermelho",
+    "story": [
+     "O primeiro balão era vermelho.",
+     "— Que redondo! — disse Tomás.",
+     "Deu-lhe uma palmadinha."
+    ],
+    "action": "Apresenta uma bola leve e macia para explorar forma e superfície.",
+    "materials": [
+     "Bola macia vermelha"
+    ]
+   },
+   {
+    "title": "Uma fita comprida",
+    "story": [
+     "Tomás encontrou uma fita colorida.",
+     "— Uau, que comprida!",
+     "Puxou-a devagar."
+    ],
+    "action": "Explora uma fita larga e curta, sempre segura pelo adulto e longe do pescoço.",
+    "materials": [
+     "Fita de tecido larga"
+    ]
+   },
+   {
+    "title": "Pum! Que surpresa",
+    "story": [
+     "Ouviu-se um PUM!",
+     "Tomás saltou de surpresa.",
+     "— Era só uma caixa a fechar!"
+    ],
+    "action": "Produz um som moderado e previsível ao fechar uma caixa, antecipando-o. Não rebentes balões.",
+    "materials": [
+     "Caixa de plástico"
+    ]
+   },
+   {
+    "title": "A música da festa",
+    "story": [
+     "— Vamos dançar! — gritou Tomás.",
+     "Tum, tum, tum!",
+     "Os amigos seguiram o ritmo."
+    ],
+    "action": "Marca uma pulsação lenta numa superfície, com ajuda no movimento se desejado.",
+    "materials": [
+     "Tambor",
+     "Mesa"
+    ]
+   },
+   {
+    "title": "Viva!",
+    "story": [
+     "Tomás levantou os braços.",
+     "— Esta foi a melhor festa!",
+     "E despediu-se com uma canção."
+    ],
+    "action": "Apresenta novamente a bola macia e um som final suave de festa.",
+    "materials": [
+     "Bola macia",
+     "Guizo suave"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "O Cabeleireiro Trapalhão",
+  "emoji": "💇",
+  "tag": "Pincéis e texturas",
+  "cover": "hs08-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "O pente desapareceu",
+    "story": [
+     "O senhor Bigodes abriu o salão.",
+     "— Onde está o meu pente?",
+     "Encontrou-o dentro do sapato!"
+    ],
+    "action": "Oferece um pente de dentes largos com pontas arredondadas para explorar nas mãos.",
+    "materials": [
+     "Pente largo e seguro"
+    ]
+   },
+   {
+    "title": "A escova dançarina",
+    "story": [
+     "Pegou numa escova muito macia.",
+     "— Esta escova quer dançar!",
+     "E fez: shhh, shhh!"
+    ],
+    "action": "Explora uma escova de cerdas muito macias, primeiro com toque voluntário na mão.",
+    "materials": [
+     "Escova macia"
+    ]
+   },
+   {
+    "title": "O cabelo espetado",
+    "story": [
+     "O senhor Bigodes olhou-se ao espelho.",
+     "— Tenho o cabelo como um ouriço!",
+     "Todos desataram a rir."
+    ],
+    "action": "Apresenta um novelo grande e bem preso ou peruca de tecido para sentir fios diferentes.",
+    "materials": [
+     "Peruca de tecido",
+     "Tiras de lã fixas"
+    ]
+   },
+   {
+    "title": "O secador faz fuu",
+    "story": [
+     "O secador fez: fuuuuu!",
+     "— Ai, que vento!",
+     "Os cabelos levantaram-se."
+    ],
+    "action": "Usa um leque ou vento leve sem calor, próximo da mão, se tolerado.",
+    "materials": [
+     "Leque",
+     "Pano leve"
+    ]
+   },
+   {
+    "title": "A toalha gigante",
+    "story": [
+     "O cabeleireiro encontrou uma toalha enorme.",
+     "— Onde está o cliente?",
+     "Estava escondido atrás dela."
+    ],
+    "action": "Deixa explorar uma toalha macia e faz uma brincadeira de esconder um objeto, não a face.",
+    "materials": [
+     "Toalha macia",
+     "Objeto grande"
+    ]
+   },
+   {
+    "title": "O penteado perfeito",
+    "story": [
+     "Finalmente, o cabelo ficou arranjado.",
+     "— Que bonito! — disse o cabeleireiro.",
+     "Mas o próprio cabelo estava de pé!"
+    ],
+    "action": "Repete a escova favorita e uma gargalhada expressiva.",
+    "materials": [
+     "Escova macia",
+     "Pente"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "A Viagem à Lua",
+  "emoji": "🚀",
+  "tag": "Contagem, espaço e texturas",
+  "cover": "hs09-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "Preparar o foguetão",
+    "story": [
+     "A astronauta Lia entrou no foguetão.",
+     "— Cintos preparados!",
+     "Hoje vamos visitar a Lua!"
+    ],
+    "action": "Apresenta um tecido liso a representar o fato espacial, sem apertar o corpo.",
+    "materials": [
+     "Tecido liso",
+     "Caixa grande"
+    ]
+   },
+   {
+    "title": "Três, dois, um!",
+    "story": [
+     "Lia contou: três... dois... um!",
+     "— DESCOLAR!",
+     "O foguetão fez: vruuum!"
+    ],
+    "action": "Faz contagem lenta e um som grave suave com a voz, sem estímulos bruscos.",
+    "materials": [
+     "Voz do professor",
+     "Caixa"
+    ]
+   },
+   {
+    "title": "As estrelas brilham",
+    "story": [
+     "Pela janela, Lia viu estrelas.",
+     "— São tantas!",
+     "Uma parecia piscar só para ela."
+    ],
+    "action": "Apresenta pequenas formas em relevo presas a cartão grande, com exploração tátil.",
+    "materials": [
+     "Cartão com estrelas em relevo"
+    ]
+   },
+   {
+    "title": "A Lua é rugosa",
+    "story": [
+     "O foguetão pousou.",
+     "— A Lua tem muitas pedras!",
+     "Lia tocou numa rocha misteriosa."
+    ],
+    "action": "Oferece uma superfície rugosa grande e segura, comparando com uma lisa.",
+    "materials": [
+     "Pedra grande lisa",
+     "Textura rugosa fixa"
+    ]
+   },
+   {
+    "title": "Passos de astronauta",
+    "story": [
+     "Lia deu um passo.",
+     "— Boinc! Pareço um canguru!",
+     "Depois deu outro: boinc!"
+    ],
+    "action": "Marca ritmo de passos com batidas leves e pausas, sem deslocar o corpo da aluna.",
+    "materials": [
+     "Tambor pequeno",
+     "Mesa"
+    ]
+   },
+   {
+    "title": "Regresso à Terra",
+    "story": [
+     "— Adeus, Lua! — gritou Lia.",
+     "O foguetão regressou: vruuum!",
+     "E a aventura terminou."
+    ],
+    "action": "Repete a contagem e o som de voo, terminando numa pausa previsível.",
+    "materials": [
+     "Caixa",
+     "Voz do professor"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "O Pai Natal Desastrado",
+  "emoji": "🎅",
+  "tag": "Natal, tecidos e sinos",
+  "cover": "hs10-capa",
+  "images": [],
+  "scenes": [
+   {
+    "title": "O gorro desaparecido",
+    "story": [
+     "O Pai Natal acordou muito cedo.",
+     "— Ho, ho, ho! Onde está o meu gorro?",
+     "Estava debaixo da almofada."
+    ],
+    "action": "Apresenta um gorro de tecido macio e permite explorar o pompom bem preso.",
+    "materials": [
+     "Gorro natalício seguro",
+     "Almofada"
+    ]
+   },
+   {
+    "title": "Sinos na oficina",
+    "story": [
+     "Os duendes ouviam: trim, trim!",
+     "— Os sinos já estão prontos!",
+     "O Pai Natal começou a dançar."
+    ],
+    "action": "Produz toques suaves num sino, com pausas entre repetições.",
+    "materials": [
+     "Sino suave"
+    ]
+   },
+   {
+    "title": "O papel barulhento",
+    "story": [
+     "O Pai Natal embrulhou uma prenda.",
+     "Crac, crac, crac!",
+     "— Que barulho divertido!"
+    ],
+    "action": "Ajuda a amarrotar papel grosso de embrulho, sem peças soltas ou cortantes.",
+    "materials": [
+     "Papel de embrulho grosso"
+    ]
+   },
+   {
+    "title": "A caixa misteriosa",
+    "story": [
+     "Abriu uma caixa gigantesca.",
+     "— Oh! Está cheia de meias!",
+     "Os duendes riram-se."
+    ],
+    "action": "Apresenta uma caixa grande e uma meia macia para exploração tátil.",
+    "materials": [
+     "Caixa",
+     "Meia macia"
+    ]
+   },
+   {
+    "title": "Neve fofinha",
+    "story": [
+     "Lá fora caiu neve.",
+     "— Que fofinha! — disse o Pai Natal.",
+     "Os duendes fizeram um boneco."
+    ],
+    "action": "Apresenta tecido felpudo branco em lugar de neve artificial em pó.",
+    "materials": [
+     "Tecido felpudo branco"
+    ]
+   },
+   {
+    "title": "Uma prenda especial",
+    "story": [
+     "O Pai Natal encontrou a última prenda.",
+     "— É para ti: uma gargalhada!",
+     "HO, HO, HO!"
+    ],
+    "action": "Repetir o sino suave e o toque no tecido preferido; termina com uma despedida alegre.",
+    "materials": [
+     "Sino suave",
+     "Gorro ou tecido"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "O Outono do Leo",
+  "emoji": "🍂",
+  "tag": "Folhas, vento, chuva e casaco quente",
+  "cover": "hs11-capa",
+  "images": [
+   "hs11-capa",
+   "hs11-c2",
+   "hs11-c3",
+   "hs11-c4",
+   "hs11-c5",
+   "hs11-c6"
+  ],
+  "scenes": [
+   {
+    "title": "As folhas fazem CRAC!",
+    "story": [
+     "Era uma manhã de outono.",
+     "O Leo encontrou folhas amarelas e vermelhas.",
+     "— Olha! As folhas fazem CRAC, CRAC!",
+     "O seu cão, o Max, também quis brincar."
+    ],
+    "action": "Mostra uma folha seca grande e deixa o aluno explorar a sua forma e textura com apoio. Amassa uma folha perto dele para ouvir o estalido. Alterna com uma folha mais macia.",
+    "materials": [
+     "Folhas secas limpas",
+     "Folha macia",
+     "Recipiente largo"
+    ],
+    "sound": "CRAC! CRAC!",
+    "stop": "O Leo guardou uma folha e sentou-se um bocadinho."
+   },
+   {
+    "title": "O vento brincalhão",
+    "story": [
+     "De repente, chegou o vento.",
+     "— Uuuuu! Que vento brincalhão!",
+     "As folhas começaram a dançar no ar.",
+     "O Leo abriu os braços e sorriu."
+    ],
+    "action": "Anuncia que vem vento. Aproxima um leque ou abanador e cria uma brisa suave sobre a mão ou o antebraço. Faz pausas para observar a reação e oferecer a escolha de continuar ou parar.",
+    "materials": [
+     "Leque",
+     "Tecido leve",
+     "Folhas grandes"
+    ],
+    "sound": "UUUUU!",
+    "stop": "O vento acalmou. As folhas ficaram quietinhas."
+   },
+   {
+    "title": "Plic, ploc! Começou a chover",
+    "story": [
+     "Uma nuvem cinzenta tapou o sol.",
+     "Plic! Ploc! Começou a chover!",
+     "O Leo abriu um guarda-chuva azul.",
+     "— Que cócegas fazem as gotinhas!"
+    ],
+    "action": "Primeiro imita o som da chuva com os dedos sobre uma mesa. Depois, se adequado, coloca algumas gotas de água morna nas mãos do aluno com borrifador de névoa fina. Seca com uma toalha macia.",
+    "materials": [
+     "Borrifador com água",
+     "Taça",
+     "Toalha macia"
+    ],
+    "sound": "PLIC! PLOC!",
+    "stop": "A chuva parou e o Leo fechou o guarda-chuva."
+   },
+   {
+    "title": "O casaco quentinho",
+    "story": [
+     "O ar ficou fresquinho.",
+     "— Brrr! Tenho frio! — disse o Leo.",
+     "Vestiu um casaco fofo e um cachecol.",
+     "— Ah! Agora estou tão quentinho!"
+    ],
+    "action": "Apresenta primeiro o tecido do casaco e depois o seu forro. Ajuda o aluno a tocar, apertar e deslizar a mão nas duas texturas. Podes aproximar o casaco do braço, sem o vestir sem acordo prévio.",
+    "materials": [
+     "Casaco acolchoado",
+     "Cachecol macio",
+     "Gorro de lã suave"
+    ],
+    "sound": "BRRR!",
+    "stop": "O Leo apertou o casaco e ficou confortável."
+   },
+   {
+    "title": "Os tesouros do outono",
+    "story": [
+     "No caminho, o Leo encontrou um tesouro.",
+     "Havia uma pinha, bolotas e folhas bonitas.",
+     "— Uau! Quantas coisas diferentes!",
+     "O Max farejou tudo com muita curiosidade."
+    ],
+    "action": "Explora uma pinha grande sem pontas aguçadas e uma bolota grande fixada numa peça segura, ou reproduções táteis. Compara as superfícies com uma folha seca, apresentando um objeto de cada vez.",
+    "materials": [
+     "Pinha segura",
+     "Folhas",
+     "Reproduções de bolotas grandes"
+    ],
+    "sound": "TOC! TOC!",
+    "stop": "O Leo colocou os seus tesouros numa caixa."
+   },
+   {
+    "title": "Um final bem aconchegado",
+    "story": [
+     "O passeio de outono terminou.",
+     "Lá fora, a chuva voltou a cair.",
+     "O Leo enrolou-se numa manta macia.",
+     "— Que bom é estar quentinho!",
+     "O Max adormeceu ao seu lado."
+    ],
+    "action": "Envolve suavemente as mãos ou os ombros do aluno numa manta confortável, se for bem tolerada. Produz um som de chuva leve e termina com uma despedida calma.",
+    "materials": [
+     "Manta macia",
+     "Som de chuva suave",
+     "Almofada confortável"
+    ],
+    "sound": "SHHH...",
+    "stop": "O Leo e o Max descansaram. Até à próxima aventura!"
+   }
+  ]
+ },
+ {
+  "title": "A Grande Tempestade de Inverno",
+  "emoji": "❄️",
+  "tag": "Chuva, trovões, vento, gorro e cachecol",
+  "cover": "hs12-capa",
+  "images": [
+   "hs12-capa",
+   "hs12-c2",
+   "hs12-c3",
+   "hs12-c4",
+   "hs12-c5",
+   "hs12-c6"
+  ],
+  "scenes": [
+   {
+    "title": "O inverno chegou",
+    "story": [
+     "O Leo olhou pela janela.",
+     "Lá fora, a chuva fazia plic, ploc, plic!",
+     "— Max, chegou o inverno!",
+     "O cão encostou o focinho à janela."
+    ],
+    "action": "Faz um som de chuva com os dedos sobre a mesa. Depois deixa o aluno sentir algumas gotas de água morna nas mãos, após antecipares o estímulo. Observa a reação.",
+    "materials": [
+     "Recipiente com água morna",
+     "Conta-gotas ou borrifador suave",
+     "Toalha macia"
+    ],
+    "sound": "PLIC! PLOC!",
+    "stop": "O Leo ficou a ouvir a chuva, em silêncio."
+   },
+   {
+    "title": "O vento forte",
+    "story": [
+     "De repente, o vento começou a soprar.",
+     "— Uuuuuuu! Que vento tão forte!",
+     "O cachecol do Leo dançava no ar.",
+     "O Max abanou as orelhas."
+    ],
+    "action": "Produz o som do vento com a voz e usa um leque para criar uma brisa suave junto da mão do aluno. Aproxima um tecido leve para ele explorar o movimento.",
+    "materials": [
+     "Leque",
+     "Tecido leve",
+     "Cachecol"
+    ],
+    "sound": "UUUUUU!",
+    "stop": "O Leo fechou a janela e o vento acalmou."
+   },
+   {
+    "title": "Os trovões no céu",
+    "story": [
+     "O céu ficou muito escuro.",
+     "O Leo ouviu um som distante.",
+     "— BRUM... BRUM... TROVÃO!",
+     "— Max, parece um tambor gigante!",
+     "Os dois ouviram a tempestade em segurança."
+    ],
+    "action": "Explica que vais fazer o som de um trovão. Bate devagar com a palma da mão numa caixa de cartão para produzir um som grave e suave. Dá tempo para o aluno ouvir. Só varia a intensidade se estiver confortável; interrompe perante desconforto.",
+    "materials": [
+     "Caixa de cartão grande",
+     "Palma da mão ou baqueta macia"
+    ],
+    "sound": "BRUM... BRUM!",
+    "stop": "O trovão afastou-se. A casa voltou a ficar tranquila."
+   },
+   {
+    "title": "A chuva voltou",
+    "story": [
+     "Plic, ploc! A chuva voltou a cair.",
+     "O Leo abriu o guarda-chuva azul.",
+     "— Max, ouve as gotinhas!",
+     "As gotas batiam no guarda-chuva: toc, toc, toc!"
+    ],
+    "action": "Bate suavemente com os dedos sobre um guarda-chuva fechado ou uma superfície segura, para imitar a chuva. Se adequado, borrifa ligeiramente as mãos do aluno com água à temperatura confortável.",
+    "materials": [
+     "Guarda-chuva",
+     "Borrifador com água",
+     "Toalha"
+    ],
+    "sound": "TOC! TOC! PLIC!",
+    "stop": "O Leo fechou o guarda-chuva e voltou para casa."
+   },
+   {
+    "title": "Está tanto frio!",
+    "story": [
+     "O Leo sentiu o ar frio no rosto.",
+     "— Brrr! Preciso de me agasalhar!",
+     "Pôs um gorro azul na cabeça.",
+     "Enrolou um cachecol vermelho ao pescoço.",
+     "— Agora estou quentinho!"
+    ],
+    "action": "Apresenta o gorro e o cachecol nas mãos do aluno. Ajuda a explorar as texturas, as costuras e a diferença entre um tecido mais fresco e outro macio e quente. Não cubras o rosto nem apertes o pescoço.",
+    "materials": [
+     "Gorro de malha",
+     "Cachecol macio",
+     "Tecido ligeiramente fresco"
+    ],
+    "sound": "BRRRR!",
+    "stop": "O Leo aconchegou o cachecol e decidiu descansar."
+   },
+   {
+    "title": "Quentinho em casa",
+    "story": [
+     "O Leo voltou para casa com o Max.",
+     "Enrolou-se numa manta muito fofinha.",
+     "Lá fora, a chuva continuava: plic, ploc.",
+     "— Que bom estar quentinho!",
+     "O Max adormeceu junto dele.",
+     "E os dois descansaram felizes."
+    ],
+    "action": "Ajuda o aluno a explorar uma manta macia com as mãos. Repete baixinho o som da chuva e termina com uma pausa tranquila. Não coloques objetos quentes diretamente sobre a pele.",
+    "materials": [
+     "Manta macia",
+     "Cachecol ou gorro",
+     "Som suave de chuva (opcional)"
+    ],
+    "sound": "PLIC... PLOC...",
+    "stop": "O Leo e o Max adormeceram, muito aconchegados."
+   }
+  ]
+ },
+ {
+  "title": "O Chef de Cozinha Trapalhão",
+  "emoji": "👨‍🍳",
+  "tag": "Receita divertida, sons e texturas",
+  "cover": "hs13-capa",
+  "images": [
+   "hs13-capa",
+   "hs13-c2",
+   "hs13-c3",
+   "hs13-c4",
+   "hs13-c5",
+   "hs13-c6"
+  ],
+  "scenes": [
+   {
+    "title": "O bolo gigante",
+    "story": [
+     "O chef acordou muito contente.",
+     "— Hoje vou fazer o maior bolo do mundo!",
+     "Pegou numa colher gigante e começou a mexer.",
+     "— Mexe, mexe, mexe! Que trabalheira!"
+    ],
+    "action": "Coloca uma colher de pau na mão da aluna e ajuda-a a sentir a textura da colher. Depois ajuda-a a explorar a textura do arroz e a mexer, com diferentes variações de velocidade.",
+    "materials": [
+     "Taça",
+     "Colher de pau",
+     "Arroz"
+    ]
+   },
+   {
+    "title": "O espirro gigante",
+    "story": [
+     "De repente, o chef parou.",
+     "— Ai… ai… ai… O meu nariz!",
+     "O nariz começou a fazer cócegas.",
+     "— Aaaaa… aaaaa… ATCHIIIIM!",
+     "O chef espirrou tão forte que quase voou pela cozinha!"
+    ],
+    "action": "Faz um espirro teatral e cria uma brisa muito suave com um leque próximo da mão do aluno ou borrifa suavemente as mãos com um esguicho de água, desde que o aluno tolere o estímulo.",
+    "materials": [
+     "Leque",
+     "Borrifador com água",
+     "Toalha macia"
+    ]
+   },
+   {
+    "title": "A batedeira maluca",
+    "story": [
+     "O chef limpou o nariz e disse:",
+     "— Agora vou usar a batedeira!",
+     "Carregou no botão.",
+     "— BZZZZZZZZ!",
+     "A batedeira começou a tremer e a fazer um barulho estranho.",
+     "— Ai, ai! Esta batedeira ficou maluca!"
+    ],
+    "action": "Imita o zumbido com a voz. Se for adequado, apresenta uma vibração muito suave através de uma superfície segura, após avaliação da tolerância.",
+    "materials": [
+     "Caixa de plástico",
+     "Objeto sonoro",
+     "Escova de dentes elétrica"
+    ]
+   },
+   {
+    "title": "As luvas gigantes",
+    "story": [
+     "O chef decidiu procurar as luvas do forno.",
+     "Mas encontrou duas luvas enormes!",
+     "— Oh, não! Estas luvas são gigantes!",
+     "O chef mexia os dedos e nem sabia onde estavam as mãos.",
+     "— Socorro! Onde estão os meus dedos?"
+    ],
+    "action": "Apresenta luvas e tecidos com diferentes texturas, permitindo que a aluna os explore ao seu ritmo, sem restringir as mãos.",
+    "materials": [
+     "Luva de forno",
+     "Tecido macio",
+     "Esponja",
+     "Luvas de plástico"
+    ]
+   },
+   {
+    "title": "O cheiro delicioso",
+    "story": [
+     "Finalmente, o bolo ficou pronto!",
+     "O chef aproximou-se devagarinho.",
+     "— Hummm… que cheirinho tão bom!",
+     "Cheirava a baunilha e a chocolate.",
+     "O chef sorriu, muito contente.",
+     "— Que bolo maravilhoso!"
+    ],
+    "action": "Apresenta um aroma alimentar suave, a uma distância confortável, depois de confirmar alergias e sensibilidades. Observa a reação.",
+    "materials": [
+     "Chocolate",
+     "Baunilha",
+     "Recipiente"
+    ]
+   },
+   {
+    "title": "O bolo sem açúcar",
+    "story": [
+     "O chef provou o bolo.",
+     "Parou. Ficou muito sério.",
+     "— Mas… o que aconteceu?",
+     "De repente, gritou:",
+     "— AI, NÃO! ESQUECI-ME DO AÇÚCAR!",
+     "O chef começou a rir.",
+     "— HA! HA! HA! Que trapalhão que eu sou!",
+     "Então teve uma ideia.",
+     "— Já sei! Vou pôr açúcar por cima do bolo!",
+     "Pegou no açúcar e espalhou-o sobre o bolo.",
+     "— Pronto! Agora está perfeito!"
+    ],
+    "action": "Coloca um pouco de açúcar num recipiente e ajuda a aluna a explorar a sua textura com as mãos. Depois, ajuda-a a espalhar suavemente o açúcar sobre um bolo ou uma superfície adequada, fazendo movimentos lentos e rápidos.",
+    "materials": [
+     "Açúcar granulado",
+     "Recipiente pequeno",
+     "Bolo ou superfície adequada",
+     "Colher"
+    ]
+   }
+  ]
+ }
+]

@@ -98,6 +98,17 @@ button{font:inherit;color:inherit;cursor:pointer}
 .ytwrap{width:min(100%,calc(52vh*16/9));aspect-ratio:16/9}
 .ytwrap iframe{width:100%;height:100%;border:0;border-radius:15px;pointer-events:none}
 .vid{display:block;margin-inline:auto;max-width:100%;max-height:52vh;border-radius:18px;border:3px solid var(--ink);background:#000}
+.hsgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:center;max-width:1300px;margin-inline:auto;width:100%}
+.hsimg{display:block;width:100%;max-height:46vh;object-fit:contain;border-radius:18px;border:3px solid var(--ink);background:var(--surface)}
+.hstext{min-width:0;display:flex;flex-direction:column;gap:6px;font-size:clamp(1rem,2.1vmin,1.3rem)}
+.hstext p{margin:0}.hstext p.speech{font-weight:700;color:var(--blue)}
+.hsbar{font-weight:700;color:var(--muted);font-size:.9rem;text-transform:uppercase;letter-spacing:.04em}
+@media (max-width:760px){.hsgrid{grid-template-columns:1fr}.hsimg{max-height:30vh}}
+.guide{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;padding:10px 14px;border-radius:14px;border:2px dashed var(--line);background:var(--surface);font-size:.95rem}
+.gsec{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips i{font-style:normal;padding:2px 10px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}
+.cue{display:inline-block;margin-top:6px;padding:4px 16px;border-radius:12px;background:var(--hl);color:#14213D;font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,3.5vmin,2rem)}
 .dance,.still{display:inline-block}
 .dance{animation:dance .32s ease-in-out infinite alternate;transform-origin:50% 90%}
 .still{filter:grayscale(.6);opacity:.75}
@@ -170,6 +181,7 @@ button{font:inherit;color:inherit;cursor:pointer}
       <strong>Registo neste computador</strong>
       <div id="reg"></div>
     </div>
+    <label class="row" for="cGuide"><input type="checkbox" id="cGuide"> Mostrar o guia do educador nas histórias sensoriais (ação e materiais)</label>
     <label class="row" for="cRead"><input type="checkbox" id="cRead"> Ler em voz alta as opções e as histórias</label>
     <div class="rowb">
       <button class="ctl" id="btnFull" type="button">Ecrã inteiro</button>
@@ -179,6 +191,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 </div>
 
 <script>window.ETJ_IMG = {/*IMAGENS*/};</script>
+<script>window.ETJ_HS = [/*HISTORIAS_SENSORIAIS*/];</script>
 <script>
 (() => {
 const $ = (s, r = document) => r.querySelector(s);
@@ -443,6 +456,7 @@ function show(o) {
   if (o.text) { const p = document.createElement('p'); p.className = 'text'; p.textContent = o.text; head.append(p); }
   stage.append(head);
   if (o.art) { const a = document.createElement('div'); a.className = 'art ' + (o.artCls || ''); a.setAttribute('aria-hidden', 'true'); a.innerHTML = o.art; stage.append(a); }
+  if (o.extra) { const x = document.createElement('div'); x.innerHTML = o.extra; stage.append(x); }
   const items = o.items || [];
   if (items.length) {
     const g = document.createElement('div'); g.className = 'grid'; g.style.setProperty('--cols', o.cols || Math.min(items.length, 3));
@@ -737,8 +751,50 @@ const STORIES = [
     escorrega: { art: '🎢', text: 'A Lua escorregou pelos anéis de Saturno a toda a velocidade. Uiii! O extraterrestre foi atrás dela. Foi o maior escorrega do universo. Fim.' },
     ola: { art: '👽', text: 'A Lua disse olá, e o extraterrestre respondeu com um sorriso. Ensinou-lhe uma canção do espaço e ofereceu-lhe uma estrela para levar para casa. Fim.' } } },
 ];
+/* ---------- histórias multissensoriais (biblioteca SouEspecial) ---------- */
+const HS = window.ETJ_HS || [];
+let HSLOG = {};
+try { HSLOG = JSON.parse(localStorage.getItem('etj-hs') || '{}'); } catch (e) {}
+const hsLog = (t, k) => { const r = HSLOG[t] || (HSLOG[t] = { vezes: 0, cont: 0, parar: 0 }); r[k]++; try { localStorage.setItem('etj-hs', JSON.stringify(HSLOG)); } catch (e) {} };
+const hsImg = (s, i) => IMG[s.images[i] || s.cover] || IMG[s.cover];
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function menuSensoriais() {
+  show({ title: 'Histórias sensoriais', say: 'Histórias sensoriais. Escolhe uma história.', cols: 4, items: [
+    ...HS.map((s, i) => ({ label: s.title, icon: pic(s.cover, s.emoji), color: PAL[i % 4], on: () => hsIntro(s) })), back(menuHistorias)] });
+}
+function hsIntro(s) {
+  hsLog(s.title, 'vezes');
+  show({ title: s.title, text: s.tag + '. Em cada parte da história, tu decides: continuar ou parar.',
+    art: `<img class="scene" src="${IMG[s.cover]}" alt="">`, say: s.title + '. Em cada parte da história, tu decides: continuar ou parar.', cols: 2,
+    items: [{ label: 'Começar', icon: '▶️', color: '--green', on: () => hsScene(s, 0) }, back(menuSensoriais)] });
+}
+function hsScene(s, i) {
+  const sc = s.scenes[i], narr = sc.story.join(' ').replace(/—\s*/g, '');
+  const guide = cfg.guide !== false ? `<div class="guide"><div class="gsec"><b>✋ Ação do educador</b><span>${esc(sc.action)}</span></div>
+    <div class="gsec"><b>🧺 Materiais</b><span class="chips">${sc.materials.map(m => `<i>${esc(m)}</i>`).join('')}</span></div></div>` : '';
+  show({ title: sc.title,
+    extra: `<div class="hsgrid"><img class="hsimg" src="${hsImg(s, i)}" alt=""><div class="hstext">
+      <div class="hsbar">${esc(s.title)} · parte ${i + 1} de ${s.scenes.length}</div>
+      ${sc.story.map(l => `<p${l.startsWith('—') ? ' class="speech"' : ''}>${esc(l)}</p>`).join('')}
+      ${sc.sound ? `<div><span class="cue">${esc(sc.sound)}</span></div>` : ''}${guide}</div></div>`,
+    say: narr + (sc.sound ? ' ' + sc.sound : '') + ' Queres continuar ou parar?', cols: 2,
+    items: [
+      { label: 'Continuar', icon: '▶️', color: '--green', on() { hsLog(s.title, 'cont'); sfx.ok(); i + 1 < s.scenes.length ? hsScene(s, i + 1) : hsEnd(s); } },
+      { label: 'Parar', icon: '⏹️', color: '--red', on() { hsLog(s.title, 'parar'); hsStop(s, i); } }] });
+}
+function hsStop(s, i) {
+  const sc = s.scenes[i], msg = (sc.stop ? sc.stop + ' ' : '') + 'A história fez uma pausa. Respeitamos a tua decisão.';
+  show({ title: 'A história fez uma pausa', text: msg, art: `<span class="still">⏸️</span>`, say: msg + ' Queres voltar à história ou terminar?', cols: 2,
+    items: [{ label: 'Voltar à história', icon: '▶️', color: '--green', on: () => hsScene(s, i) },
+      { label: 'Terminar', icon: '🏁', color: '--red', on: () => hsEnd(s) }] });
+}
+function hsEnd(s) {
+  win(() => hsIntro(s), menuSensoriais, 'Fim da aventura! ' + s.title + '. Obrigado por participares na história!');
+}
+
 function menuHistorias() {
   show({ title: 'Histórias', say: 'Histórias. Tu escolhes o que acontece.', items: [
+    ...(HS.length ? [{ label: 'Histórias sensoriais', icon: pic('hs00-capa', '🖐️'), color: '--green', sub: HS.length + ' histórias para sentir, ouvir e decidir', on: menuSensoriais }] : []),
     ...STORIES.map(s => ({ label: s.name, icon: pic(s.pics.start, s.icon), color: s.color, on: () => story(s, 'start') })), back(home) ] });
 }
 function story(s, id) {
@@ -1017,12 +1073,14 @@ const levelBtns = $('#levelBtns');
 });
 let clearArm = false;
 function drawReg() {
-  const el = $('#reg'), ks = Object.keys(REG);
-  if (!ks.length) { el.innerHTML = '<small>Ainda não há respostas registadas. Os jogos de Aprender guardam aqui quantas perguntas o aluno acertou à primeira.</small>'; return; }
-  el.innerHTML = '<table class="reg"><thead><tr><th>Atividade</th><th>À primeira</th><th>Perguntas</th></tr></thead><tbody>' +
-    ks.map(k => `<tr><td>${k}</td><td>${REG[k].f}</td><td>${REG[k].q}</td></tr>`).join('') + '</tbody></table>';
+  const el = $('#reg'), ks = Object.keys(REG), hk = Object.keys(HSLOG);
+  const hsTable = hk.length ? '<table class="reg"><thead><tr><th>História sensorial</th><th>Vezes</th><th>Continuar</th><th>Parar</th></tr></thead><tbody>' +
+    hk.map(k => `<tr><td>${esc(k)}</td><td>${HSLOG[k].vezes}</td><td>${HSLOG[k].cont}</td><td>${HSLOG[k].parar}</td></tr>`).join('') + '</tbody></table>' : '';
+  if (!ks.length && !hk.length) { el.innerHTML = '<small>Ainda não há respostas registadas. Os jogos de Aprender guardam aqui quantas perguntas o aluno acertou à primeira, e as histórias sensoriais quantas vezes o aluno escolheu continuar ou parar.</small>'; return; }
+  el.innerHTML = (ks.length ? '<table class="reg"><thead><tr><th>Atividade</th><th>À primeira</th><th>Perguntas</th></tr></thead><tbody>' +
+    ks.map(k => `<tr><td>${k}</td><td>${REG[k].f}</td><td>${REG[k].q}</td></tr>`).join('') + '</tbody></table>' : '') + hsTable;
   const b = document.createElement('button'); b.type = 'button'; b.className = 'ctl'; b.textContent = clearArm ? 'Carregue outra vez para apagar' : 'Apagar registo';
-  b.onclick = () => { if (!clearArm) { clearArm = true; return drawReg(); } REG = {}; clearArm = false; try { localStorage.removeItem('etj-reg'); } catch (e) {} drawReg(); };
+  b.onclick = () => { if (!clearArm) { clearArm = true; return drawReg(); } REG = {}; HSLOG = {}; clearArm = false; try { localStorage.removeItem('etj-reg'); localStorage.removeItem('etj-hs'); } catch (e) {} drawReg(); };
   el.append(b);
 }
 function syncSettings() {
@@ -1033,7 +1091,7 @@ function syncSettings() {
   $('#rMus').value = cfg.musicMs / 1000; $('#vMus').textContent = Math.round(cfg.musicMs / 1000) + ' s';
   $('#rDwell').value = cfg.dwellMs / 1000; $('#vDwell').textContent = (cfg.dwellMs / 1000).toFixed(1).replace('.', ',') + ' s';
   $('#rSens').value = cfg.sens; $('#vSens').textContent = cfg.sens;
-  $('#cRead').checked = cfg.read;
+  $('#cRead').checked = cfg.read; $('#cGuide').checked = cfg.guide !== false;
   $('#cScan').checked = cfg.scan !== false; $('#rScan').disabled = cfg.scan === false;
 }
 $('#rScan').oninput = e => { cfg.scanMs = e.target.value * 1000; save(); syncSettings(); };
@@ -1041,6 +1099,7 @@ $('#rMus').oninput = e => { cfg.musicMs = e.target.value * 1000; save(); syncSet
 $('#rDwell').oninput = e => { cfg.dwellMs = e.target.value * 1000; save(); syncSettings(); };
 $('#rSens').oninput = e => { cfg.sens = +e.target.value; save(); syncSettings(); };
 $('#cScan').onchange = e => { cfg.scan = e.target.checked; save(); syncSettings(); drawChip(); };
+$('#cGuide').onchange = e => { cfg.guide = e.target.checked; save(); };
 $('#cRead').onchange = e => { cfg.read = e.target.checked; save(); if (!cfg.read) try { speechSynthesis.cancel(); } catch (x) {} };
 $('#fVid').onchange = e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) Vids.add(fs); };
 Vids.load();

@@ -115,6 +115,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .atcanvas{height:44vh;max-width:100%;aspect-ratio:512/768;border-radius:18px;border:3px solid var(--ink);background:#fff}
 #printSheet{display:none}
 @media print{body>*:not(#printSheet){display:none!important}#printSheet{display:flex!important;align-items:center;justify-content:center;height:95vh}#printSheet img{max-width:100%;max-height:100%;object-fit:contain}@page{size:A4 portrait;margin:10mm}}
+.instr{font-size:clamp(4rem,16vmin,8rem);line-height:1.3;display:inline-block;margin-bottom:.15em}
+.instr.hit{animation:boom .3s ease-out}
+@keyframes boom{0%{transform:scale(1)}40%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1)}}
+.mdots{display:flex;justify-content:center;gap:14px;margin-top:10px;line-height:1}
+.mdots i{width:1.1em;height:1.1em;border-radius:50%;border:3px solid var(--ink);background:var(--surface);font-size:clamp(1.3rem,3.6vmin,2rem)}
+.mdots i.on{background:var(--green)}
+.mmsg{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,4.5vmin,2.6rem);color:var(--ink);margin-top:4px}
+@media (prefers-reduced-motion:reduce){.instr.hit{animation:none}}
 .dance,.still{display:inline-block}
 .dance{animation:dance .32s ease-in-out infinite alternate;transform-origin:50% 90%}
 .still{filter:grayscale(.6);opacity:.75}
@@ -784,6 +792,7 @@ function menuPassos() {
     { label: 'Fogo de artifício', icon: pic('fogo-2', '🎆'), color: '--violet', on: fogo },
     { label: 'Surpresa!', icon: pic('presente', '🎁'), color: '--orange', on: surpresa },
     { label: 'A música parou!', icon: '⏯️', color: '--red', on: musicaParou },
+    { label: 'Tambor mágico', icon: '🥁', color: '--blue', on: mDrum },
     { label: 'Rega a flor', icon: pic('girassol', '🌻'), color: '--green', on: flower },
     back(menuAprender) ] });
 }
@@ -1089,8 +1098,96 @@ function playVideo(v) {
   leave = () => { done = true; try { media.pause(); } catch (e) {} media.removeAttribute('src'); try { media.load(); } catch (e) {} URL.revokeObjectURL(url); };
 }
 
+/* ---------- jogos musicais (biblioteca SouEspecial), tocados pelo aluno ---------- */
+const MVOL = .45;
+function mEnv(c, at, peak, dur) { const g = c.createGain(); g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(Math.max(.0001, peak * MVOL), at + .004); g.gain.exponentialRampToValueAtTime(.0001, at + dur); g.connect(c.destination); return g; }
+function mTone(c, f, dur, type, at, peak, endF) { const o = c.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, at); if (endF) o.frequency.exponentialRampToValueAtTime(endF, at + dur * .9); o.connect(mEnv(c, at, peak, dur)); o.start(at); o.stop(at + dur + .01); }
+function mNoise(c, dur, at, peak, ff, ft) {
+  const n = Math.floor(c.sampleRate * Math.max(dur, .03)), b = c.createBuffer(1, n, c.sampleRate), v = b.getChannelData(0); for (let i = 0; i < n; i++) v[i] = Math.random() * 2 - 1;
+  const src = c.createBufferSource(); src.buffer = b; const f = c.createBiquadFilter(); f.type = ft || 'lowpass'; f.frequency.value = ff; src.connect(f); f.connect(mEnv(c, at, peak, dur)); src.start(at); src.stop(at + dur + .01);
+}
+function playKind(kind, when = 0) {
+  const c = audio(); if (!c) return; const at = c.currentTime + when;
+  if (kind === 'drum') { mTone(c, 110, .42, 'sine', at, .8, 54); mNoise(c, .12, at, .25, 500); }
+  else if (kind === 'bell') { mTone(c, 740, .9, 'sine', at, .38); mTone(c, 1110, .6, 'sine', at, .17); mTone(c, 1480, .42, 'sine', at, .1); }
+  else if (kind === 'maraca') { mNoise(c, .16, at, .65, 4100, 'highpass'); mNoise(c, .1, at + .1, .3, 5000, 'highpass'); }
+  else if (kind === 'clap') { mNoise(c, .21, at, .55, 1300, 'bandpass'); mNoise(c, .065, at + .04, .3, 2400, 'highpass'); }
+  else if (kind === 'rain') { mNoise(c, .8, at, .27, 3500, 'highpass'); for (let i = 0; i < 6; i++) mTone(c, 500 + i * 32, .055, 'sine', at + i * .09, .06); }
+  else if (kind === 'wind') { mNoise(c, 1.1, at, .29, 380, 'lowpass'); mTone(c, 155, .9, 'sine', at, .1, 105); }
+  else if (kind === 'thunder') { mNoise(c, 1.1, at, .4, 140, 'lowpass'); mTone(c, 78, 1, 'triangle', at, .23, 45); }
+}
+const MK = { drum: ['🥁', 'Tambor', 'BUM!'], bell: ['🔔', 'Sino', 'DING!'], maraca: ['🪇', 'Maraca', 'CHIC!'], clap: ['👏', 'Palmas', 'CLAP!'], rain: ['🌧️', 'Chuva', 'PLIC, PLOC!'], wind: ['🌬️', 'Vento', 'UUUU!'], thunder: ['⛈️', 'Trovão', 'BRRUM!'] };
+const instrHTML = (sym, n) => `<div class="instr" id="mInst">${sym}</div>` + (n ? `<div class="mdots" id="mDots">${'<i></i>'.repeat(n)}</div>` : '') + `<div class="mmsg" id="mMsg">VAMOS TOCAR!</div>`;
+function bump(sym, msg) {
+  const el = $('#mInst'); if (!el) return; if (sym) el.textContent = sym;
+  el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit'); if (msg) $('#mMsg').textContent = msg;
+}
+const setDots = k => stage.querySelectorAll('#mDots i').forEach((d, i) => d.classList.toggle('on', i < k));
+const EXIT = ' (Para sair, o educador usa o botão Início.)';
+function menuMusicais() {
+  show({ title: 'Jogos musicais', say: 'Jogos musicais. Escolhe um jogo.', cols: 3, items: [
+    { label: 'Tambor mágico', icon: '🥁', color: '--orange', sub: 'Cada toque é um BUM!', on: mDrum },
+    { label: 'Conta as batidas', icon: '🎯', color: '--blue', sub: 'Uma, duas, três… até cinco!', on: mCount },
+    { label: 'Pequena orquestra', icon: '🎶', color: '--violet', sub: 'Experimenta quatro sons', on: mBand },
+    { label: 'Imita o ritmo', icon: '👏', color: '--green', sub: 'Ouve… e responde!', on: mEcho },
+    { label: 'Tempestade sonora', icon: '⛈️', color: '--blue', sub: 'Chuva, vento e trovão', on: mStorm },
+    { label: 'Caixa musical surpresa', icon: '🎁', color: '--red', sub: 'Que som será o próximo?', on: mSurprise },
+    back(menuMusicas)] });
+}
+function mDrum() {
+  let n = 0;
+  show({ title: 'Tambor mágico', text: 'Cada toque é um BUM! Tu decides quantas vezes tocas.' + EXIT, art: instrHTML('🥁'), say: 'Tambor mágico! Toca no tambor!',
+    items: [{ label: 'Tocar', icon: '🥁', color: '--orange', on() { playKind('drum'); n++; bump(null, 'BUM! · ' + n); } }] });
+}
+function mCount() {
+  show({ title: 'Quantas batidas?', text: 'O educador ou o aluno escolhe quantas batidas vamos fazer.', say: 'Quantas batidas vamos fazer?', cols: 3,
+    items: [...[1, 2, 3, 4, 5].map((k, i) => ({ label: NUMW[k][0].toUpperCase() + NUMW[k].slice(1), icon: numIcon(k), color: PAL[i % 4], on: () => mCountPlay(k) })), back(menuMusicais)] });
+}
+function mCountPlay(t) {
+  let n = 0; const w = `${numW(t, 1)} ${t === 1 ? 'batida' : 'batidas'}`;
+  show({ title: 'Conta as batidas', text: `Vamos fazer ${w}!`, art: instrHTML('🥁', t), say: `Vamos fazer ${w}! Toca!`,
+    items: [{ label: 'Tocar', icon: '🥁', color: '--blue', on() {
+      if (n >= t) return; playKind('drum'); n++; setDots(n); bump(null, NUMW[n].toUpperCase() + '!'); say(numW(n, 1));
+      if (n === t) { Input.hold(); setTimeout(() => win(() => mCountPlay(t), mCount, `Conseguimos! Foram ${w}!`), 900); }
+    } }] });
+}
+function mBand() {
+  show({ title: 'Pequena orquestra', text: 'Escolhe o instrumento e toca quando quiseres.', art: instrHTML('🎶'), say: 'Pequena orquestra. Escolhe um instrumento.', cols: 4,
+    items: [...['drum', 'bell', 'maraca', 'clap'].map((k, i) => ({ label: MK[k][1], icon: MK[k][0], color: PAL[i % 4], on() { playKind(k); bump(MK[k][0], MK[k][2]); } })), back(menuMusicais)] });
+}
+function mEcho() {
+  show({ title: 'Imita o ritmo', text: 'Primeiro ouves o ritmo. Depois és tu que tocas!', say: 'Imita o ritmo. Escolhe: lento ou rápido?', cols: 2,
+    items: [{ label: 'Lento', icon: '🐢', color: '--green', on: () => mEchoPlay(1) }, { label: 'Rápido', icon: '🐇', color: '--orange', on: () => mEchoPlay(2) }, back(menuMusicais)] });
+}
+function mEchoPlay(tempo) {
+  const total = tempo + 2, gap = tempo === 1 ? .75 : .38; let n = 0, ready = false;
+  show({ title: 'Imita o ritmo', text: 'Ouve com atenção…', art: instrHTML('👏', total),
+    items: [{ label: 'Tocar', icon: '🥁', color: '--green', on() {
+      if (!ready || n >= total) return; playKind('drum'); n++; setDots(n); bump(null, 'BUM!');
+      if (n === total) { Input.hold(); setTimeout(() => win(() => mEchoPlay(tempo), mEcho, 'Bravo! Imitaste o ritmo!'), 800); }
+    } }] });
+  Input.hold();
+  say('Ouve o ritmo.', () => {
+    for (let i = 0; i < total; i++) { playKind('drum', .1 + i * gap); setTimeout(() => { setDots(i + 1); bump(null, 'BUM!'); }, 100 + i * gap * 1000); }
+    setTimeout(() => {
+      setDots(0); ready = true; const tx = stage.querySelector('.head .text'); if (tx) tx.textContent = 'Agora és tu! Toca ' + numW(total, 1) + ' vezes.';
+      const mm = $('#mMsg'); if (mm) mm.textContent = 'AGORA TU!'; say('Agora és tu!', () => Input.release());
+    }, (total * gap + .9) * 1000);
+  });
+}
+function mStorm() {
+  show({ title: 'Tempestade sonora', text: 'Que tempo faz? Escolhe e ouve.', art: instrHTML('☁️'), say: 'Tempestade sonora. Chuva, vento ou trovão?', cols: 3,
+    items: [...['rain', 'wind', 'thunder'].map((k, i) => ({ label: MK[k][1], icon: MK[k][0], color: ['--blue', '--green', '--violet'][i], on() { playKind(k); bump(MK[k][0], MK[k][2]); } })), back(menuMusicais)] });
+}
+function mSurprise() {
+  let t = 0; const order = ['drum', 'bell', 'maraca', 'clap'];
+  show({ title: 'Caixa musical surpresa', text: 'Que som vai sair da caixa?' + EXIT, art: instrHTML('🎁'), say: 'Caixa musical surpresa! Abre a caixa!',
+    items: [{ label: 'Abrir a caixa', icon: '🎁', color: '--red', on() { const k = order[t++ % 4]; playKind(k); bump(MK[k][0], MK[k][2]); } }] });
+}
+
 function menuMusicas() {
   show({ title: 'Músicas', say: 'Músicas. Escolhe o que queres tocar.', cols: 3, items: [
+    { label: 'Jogos musicais', icon: '🥁', color: '--orange', on: menuMusicais },
     { label: 'Os meus vídeos', icon: '🎬', color: '--blue', on: menuVideos },
     { label: 'A música parou!', icon: '⏯️', color: '--red', on: musicaParou },
     ...SONGS.map(s => ({ label: s.name, icon: s.icon, color: s.color, on: () => song(s) })),

@@ -1245,14 +1245,16 @@
     "story": [
      "O chef acordou muito contente.",
      "— Hoje vou fazer o maior bolo do mundo!",
+     "Colocou farinha na taça e juntou um ovo.",
      "Pegou numa colher gigante e começou a mexer.",
      "— Mexe, mexe, mexe! Que trabalheira!"
     ],
-    "action": "Coloca uma colher de pau na mão da aluna e ajuda-a a sentir a textura da colher. Depois ajuda-a a explorar a textura do arroz e a mexer, com diferentes variações de velocidade.",
+    "action": "Coloca uma taça com farinha ao alcance da aluna e ajuda-a a explorar a textura. Depois, mostra-lhe o ovo e ajuda-a a participar no momento de o adicionar à taça, partindo-o tu, se necessário. Coloca uma colher de pau na mão da aluna e ajuda-a a mexer a mistura, alternando movimentos lentos e rápidos. Lava as mãos após o contacto com ovo cru e evita levar a mistura à boca.",
     "materials": [
      "Taça",
-     "Colher de pau",
-     "Arroz"
+     "Farinha",
+     "1 ovo",
+     "Colher de pau"
     ]
    },
    {

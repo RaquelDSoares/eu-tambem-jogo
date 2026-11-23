@@ -17,6 +17,20 @@
   --bg:#0E1626; --surface:#1A2540; --ink:#F2F5FB; --muted:#A9B5CF; --line:#33415F; --hl-ring:#000000;
   --green:#35C48A; --red:#FF6B5E; --blue:#5B93FF; --yellow:#FFC53D; --violet:#A07BFF; --orange:#FF9A45; color-scheme:dark }
 
+/* modo baixa visão: fundo preto, cores saturadas, molduras grossas */
+:root.lv{--bg:#000;--surface:#111;--ink:#fff;--muted:#e6e6e6;--line:#fff;--hl:#FFE600;--hl-ring:#fff;
+  --green:#22E08F;--red:#FF4D4D;--blue:#3FA0FF;--yellow:#FFE600;--violet:#C08CFF;--orange:#FF9A1F;color-scheme:dark}
+:root.lv .t{background:#000;border-width:10px;border-radius:28px;min-height:30vh}
+:root.lv .t .lb{font-size:clamp(1.6rem,5.5vmin,3.2rem);color:#fff}
+:root.lv .t .ic{font-size:clamp(3.5rem,15vmin,8rem)}
+:root.lv .t .pic{height:clamp(110px,28vmin,300px)}
+:root.lv .t .sub{display:none}
+:root.lv .t:disabled{opacity:.25}
+:root.lv .t.scan,:root.lv .t.focus{outline:14px solid var(--hl);box-shadow:0 0 0 22px #000,0 0 0 26px var(--hl)}
+:root.lv .t::after{background:var(--hl);opacity:.35}
+:root.lv .head h1{font-size:clamp(2rem,6vmin,3.6rem)}
+:root.lv .head .text{font-size:clamp(1.2rem,3.2vmin,1.9rem)}
+:root.lv .guide{border-color:#666}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;overflow:hidden}
@@ -135,6 +149,8 @@ button{font:inherit;color:inherit;cursor:pointer}
     <span class="brand">Eu Também Jogo</span>
     <div id="meter" hidden title="Nível do sopro ou do sorriso. O traço marca o ponto em que conta como escolha."><i></i><b></b></div>
     <span class="chip" id="chip">Sem acesso escolhido</span>
+    <button class="ctl" id="btnMore" type="button" hidden>Outras opções ▶</button>
+    <button class="ctl" id="btnBack" type="button" hidden>↩ Voltar</button>
     <button class="ctl" id="btnHome" type="button">Início</button>
     <button class="ctl" id="btnSet" type="button">Definições</button>
   </header>
@@ -196,6 +212,8 @@ button{font:inherit;color:inherit;cursor:pointer}
       <strong>Registo neste computador</strong>
       <div id="reg"></div>
     </div>
+    <label class="row" for="cLv"><input type="checkbox" id="cLv"> Modo baixa visão: no máximo 2 opções grandes, fundo escuro e alto contraste</label>
+    <small style="margin-top:-10px">Com este modo, o «Voltar» e as «Outras opções» passam para botões do educador na barra de cima, para não contarem como escolhas do aluno.</small>
     <label class="row" for="cGuide"><input type="checkbox" id="cGuide"> Mostrar o guia do educador nas histórias sensoriais (ação e materiais)</label>
     <label class="row" for="cRead"><input type="checkbox" id="cRead"> Ler em voz alta as opções e as histórias</label>
     <div class="rowb">
@@ -218,7 +236,7 @@ const scene = (n, fb) => IMG[n] ? `<img class="scene" src="${IMG[n]}" alt="">` :
 const pic = (n, fb) => IMG[n] ? `<img class="pic" src="${IMG[n]}" alt="">` : fb;
 
 /* ---------- configuração ---------- */
-const cfg = { mode: null, scanMs: 2000, dwellMs: 1500, sens: 5, read: true, level: 3, scan: true, musicMs: 8000 };
+const cfg = { mode: null, scanMs: 2000, dwellMs: 1500, sens: 5, read: true, level: 3, scan: true, musicMs: 8000, lv: true };
 try { Object.assign(cfg, JSON.parse(localStorage.getItem('etj') || '{}')); } catch (e) {}
 cfg.mode = null; // o educador escolhe sempre o acesso ao abrir
 const save = () => { try { localStorage.setItem('etj', JSON.stringify(cfg)); } catch (e) {} };
@@ -463,8 +481,32 @@ requestAnimationFrame(loop);
 
 /* ---------- ecrãs ---------- */
 let leave = null;
+let lastShow = null, pageMem = { key: '', p: 0 };
+const LV = () => cfg.lv !== false;
 function show(o) {
   if (leave && !o.keep) { const f = leave; leave = null; f(); }
+  lastShow = o;
+  // modo baixa visão: no máximo 2 opções; «Voltar» e «Outras opções» passam para a barra do educador
+  let items = o.items || [], backFn = null, pages = null;
+  if (LV() && !o.edu) {
+    const bi = items.find(i => i.isBack); if (bi) { backFn = bi.on; items = items.filter(i => !i.isBack); }
+    if (items.length > 2) {
+      pages = []; for (let i = 0; i < items.length; i += 2) pages.push(items.slice(i, i + 2));
+      const live = pages.map((p, i) => p.some(it => !it.disabled) ? i : -1).filter(i => i >= 0);
+      if (pageMem.key !== o.title) pageMem = { key: o.title, p: live.length ? live[0] : 0 };
+      if (live.length && !live.includes(pageMem.p % pages.length)) pageMem.p = live.find(i => i > pageMem.p % pages.length) ?? live[0];
+      pageMem.p %= pages.length; items = pages[pageMem.p];
+    } else pageMem = { key: o.title, p: 0 };
+  }
+  const bb = $('#btnBack'), bm = $('#btnMore');
+  bb.hidden = !backFn; bb.onclick = backFn ? () => { audio(); backFn(); } : null;
+  bm.hidden = !pages;
+  if (pages) {
+    bm.textContent = `Outras opções ▶ (${pageMem.p + 1}/${pages.length})`;
+    bm.onclick = () => { pageMem.p = (pageMem.p + 1) % pages.length; const live = pages.map((p, i) => p.some(it => !it.disabled) ? i : -1).filter(i => i >= 0);
+      if (live.length) while (!live.includes(pageMem.p)) pageMem.p = (pageMem.p + 1) % pages.length;
+      show({ ...o, keep: true, say: '' }); };
+  }
   stage.innerHTML = '';
   const head = document.createElement('div'); head.className = 'head';
   const h = document.createElement('h1'); h.textContent = o.title; head.append(h);
@@ -472,9 +514,8 @@ function show(o) {
   stage.append(head);
   if (o.art) { const a = document.createElement('div'); a.className = 'art ' + (o.artCls || ''); a.setAttribute('aria-hidden', 'true'); a.innerHTML = o.art; stage.append(a); }
   if (o.extra) { const x = document.createElement('div'); x.innerHTML = o.extra; stage.append(x); }
-  const items = o.items || [];
   if (items.length) {
-    const g = document.createElement('div'); g.className = 'grid'; g.style.setProperty('--cols', o.cols || Math.min(items.length, 3));
+    const g = document.createElement('div'); g.className = 'grid'; g.style.setProperty('--cols', LV() && !o.edu ? items.length : (o.cols || Math.min(items.length, 3)));
     for (const it of items) {
       const b = document.createElement('button'); b.type = 'button'; b.className = 't'; b.dataset.t = it.label; b.disabled = !!it.disabled;
       b.style.setProperty('--c', `var(${it.color || '--blue'})`);
@@ -487,10 +528,10 @@ function show(o) {
   if (o.say && cfg.mode) { Input.hold(); say(o.say, () => Input.release()); }
   else { Input.held = false; Input.refresh(); }
 }
-const back = fn => ({ label: 'Voltar', icon: '↩️', color: '--muted', on: fn });
+const back = fn => ({ label: 'Voltar', icon: '↩️', color: '--muted', on: fn, isBack: true });
 
 function modeSelect() {
-  show({ title: 'Como vai jogar hoje?', text: 'Escolha a forma de acesso do aluno. Com um clique, todos os jogos, histórias e músicas passam a funcionar dessa maneira.',
+  show({ edu: true, title: 'Como vai jogar hoje?', text: 'Escolha a forma de acesso do aluno. Com um clique, todos os jogos, histórias e músicas passam a funcionar dessa maneira.',
     cols: 3, items: Object.entries(MODES).map(([k, m]) => ({ label: m.n, icon: m.i, color: m.c, sub: m.d, on: () => setMode(k, true) })) });
 }
 function drawChip() {
@@ -622,7 +663,7 @@ function findAnimal() {
   let round = 0;
   const next = () => {
     if (round === 5) return win(findAnimal, menuJogos, 'Encontraste os animais todos!');
-    const opts = shuffle(ANIMALS).slice(0, 3), goal = opts[Math.floor(Math.random() * 3)], wrong = new Set();
+    const N = LV() ? 2 : 3, opts = shuffle(ANIMALS).slice(0, N), goal = opts[Math.floor(Math.random() * N)], wrong = new Set();
     const draw = first => show({ title: `Onde está ${goal[1]}?`, say: first && `Onde está ${goal[1]}?`, items: opts.map((a, i) => ({ label: cap(a[1]), icon: a[0], color: ['--blue', '--orange', '--green'][i], disabled: wrong.has(i),
       on() {
         if (a === goal) { sfx.ok(); round++; show({ title: `Sim! É ${goal[1]}!`, art: goal[0], say: `Sim! É ${goal[1]}!` }); setTimeout(next, 2200); }
@@ -651,7 +692,7 @@ function memory() {
 const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 const pickOne = a => a[Math.floor(Math.random() * a.length)];
 const PAL = ['--blue', '--orange', '--green', '--violet'];
-const nOpts = () => cfg.level || 3;
+const nOpts = () => Math.min(cfg.level || 3, LV() ? 2 : 4);
 let REG = {};
 try { REG = JSON.parse(localStorage.getItem('etj-reg') || '{}'); } catch (e) {}
 function rec(key, first) {
@@ -1256,6 +1297,8 @@ function drawReg() {
   b.onclick = () => { if (!clearArm) { clearArm = true; return drawReg(); } REG = {}; HSLOG = {}; clearArm = false; try { localStorage.removeItem('etj-reg'); localStorage.removeItem('etj-hs'); } catch (e) {} drawReg(); };
   el.append(b);
 }
+function applyLv() { document.documentElement.classList.toggle('lv', cfg.lv !== false); }
+applyLv();
 function syncSettings() {
   levelBtns.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.n === cfg.level));
   drawReg();
@@ -1264,6 +1307,7 @@ function syncSettings() {
   $('#rMus').value = cfg.musicMs / 1000; $('#vMus').textContent = Math.round(cfg.musicMs / 1000) + ' s';
   $('#rDwell').value = cfg.dwellMs / 1000; $('#vDwell').textContent = (cfg.dwellMs / 1000).toFixed(1).replace('.', ',') + ' s';
   $('#rSens').value = cfg.sens; $('#vSens').textContent = cfg.sens;
+  $('#cLv').checked = cfg.lv !== false;
   $('#cRead').checked = cfg.read; $('#cGuide').checked = cfg.guide !== false;
   $('#cScan').checked = cfg.scan !== false; $('#rScan').disabled = cfg.scan === false;
 }
@@ -1272,6 +1316,7 @@ $('#rMus').oninput = e => { cfg.musicMs = e.target.value * 1000; save(); syncSet
 $('#rDwell').oninput = e => { cfg.dwellMs = e.target.value * 1000; save(); syncSettings(); };
 $('#rSens').oninput = e => { cfg.sens = +e.target.value; save(); syncSettings(); };
 $('#cScan').onchange = e => { cfg.scan = e.target.checked; save(); syncSettings(); drawChip(); };
+$('#cLv').onchange = e => { cfg.lv = e.target.checked; save(); applyLv(); if (lastShow && cfg.mode) show({ ...lastShow, keep: true, say: '' }); };
 $('#cGuide').onchange = e => { cfg.guide = e.target.checked; save(); };
 $('#cRead').onchange = e => { cfg.read = e.target.checked; save(); if (!cfg.read) try { speechSynthesis.cancel(); } catch (x) {} };
 $('#fVid').onchange = e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) Vids.add(fs); };

@@ -1,0 +1,125 @@
+{
+ "chef": {
+  "title": "O Chef de Cozinha",
+  "kind": "mask",
+  "opts": "[{k:'hair',name:'cabelo',question:'De que cor é o cabelo do Chef?',choices:[['Castanho','#6e432a'],['Preto','#282527']]},{k:'skin',name:'pele',question:'De que cor é a pele do Chef?',choices:[['Clara','#f2b38b'],['Escura','#945d43']]},{k:'eyes',name:'olhos',question:'De que cor são os olhos do Chef?',choices:[['Verdes','#31a74b'],['Azuis','#397fd4']]},{k:'apron',name:'avental',question:'De que cor é o avental?',choices:[['Verde','#1ea75d'],['Vermelho','#de252c']]},{k:'hat',name:'chapéu',question:'De que cor é o chapéu?',choices:[['Branco','#f7f7f7'],['Azul','#669fdf']]}]"
+ },
+ "gato": {
+  "title": "O Gato Tobias",
+  "kind": "layers",
+  "layers": {
+   "fur": [
+    {
+     "name": "Laranja",
+     "color": "#e98c28"
+    },
+    {
+     "name": "Cinzento",
+     "color": "#898b96"
+    }
+   ],
+   "eyes": [
+    {
+     "name": "Verdes",
+     "color": "#3b9e53"
+    },
+    {
+     "name": "Azuis",
+     "color": "#317fd9"
+    }
+   ]
+  }
+ },
+ "elefante": {
+  "title": "O Elefante Tico",
+  "kind": "layers",
+  "layers": {
+   "body": [
+    {
+     "name": "Cinzento",
+     "color": "#a5a8ba"
+    },
+    {
+     "name": "Azul",
+     "color": "#61a9ec"
+    }
+   ],
+   "ears": [
+    {
+     "name": "Rosa",
+     "color": "#e99cab"
+    },
+    {
+     "name": "Amarelo",
+     "color": "#e6c44b"
+    }
+   ],
+   "eyes": [
+    {
+     "name": "Castanhos",
+     "color": "#7b4c28"
+    },
+    {
+     "name": "Azuis",
+     "color": "#3c83d5"
+    }
+   ]
+  }
+ },
+ "leo": {
+  "title": "O Leo — Outono e Inverno",
+  "kind": "layers",
+  "layers": {
+   "hair": [
+    {
+     "name": "Castanho",
+     "color": "#714022"
+    },
+    {
+     "name": "Preto",
+     "color": "#202020"
+    }
+   ],
+   "skin": [
+    {
+     "name": "Clara",
+     "color": "#f5b68f"
+    },
+    {
+     "name": "Escura",
+     "color": "#925733"
+    }
+   ],
+   "eyes": [
+    {
+     "name": "Castanhos",
+     "color": "#754022"
+    },
+    {
+     "name": "Azuis",
+     "color": "#387ecc"
+    }
+   ],
+   "coat": [
+    {
+     "name": "Amarelo",
+     "color": "#ebbc2f"
+    },
+    {
+     "name": "Vermelho",
+     "color": "#d83d42"
+    }
+   ],
+   "hat": [
+    {
+     "name": "Azul",
+     "color": "#3665bc"
+    },
+    {
+     "name": "Verde",
+     "color": "#27945d"
+    }
+   ]
+  }
+ }
+}

@@ -3,7 +3,7 @@ import base64, json, os, glob
 d = os.path.dirname(os.path.abspath(__file__))
 src = open(os.path.join(d, 'fonte.html'), encoding='utf-8').read()
 imgs = {os.path.basename(p)[:-5]: 'data:image/webp;base64,' + base64.b64encode(open(p, 'rb').read()).decode()
-        for p in sorted(glob.glob(os.path.join(d, 'img', '*.webp')) + glob.glob(os.path.join(d, 'img', 'hs', '*.webp')))}
+        for p in sorted(glob.glob(os.path.join(d, 'img', '**', '*.webp'), recursive=True))}
 hs = open(os.path.join(d, 'historias-sensoriais.json'), encoding='utf-8').read()
 page = src.replace('{/*IMAGENS*/}', json.dumps(imgs)).replace('[/*HISTORIAS_SENSORIAIS*/]', hs.replace('</', '<\\/'))
 open(os.path.join(d, 'pagina.html'), 'w', encoding='utf-8').write(page)

@@ -109,6 +109,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips i{font-style:normal;padding:2px 10px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}
 .cue{display:inline-block;margin-top:6px;padding:4px 16px;border-radius:12px;background:var(--hl);color:#14213D;font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,3.5vmin,2rem)}
+.atwrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+.atstack{position:relative;width:min(100%,calc(44vh*16/9));aspect-ratio:500/281;border-radius:18px;overflow:hidden;border:3px solid var(--ink);background:#fff}
+.atstack img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.atcanvas{height:44vh;max-width:100%;aspect-ratio:512/768;border-radius:18px;border:3px solid var(--ink);background:#fff}
+#printSheet{display:none}
+@media print{body>*:not(#printSheet){display:none!important}#printSheet{display:flex!important;align-items:center;justify-content:center;height:95vh}#printSheet img{max-width:100%;max-height:100%;object-fit:contain}@page{size:A4 portrait;margin:10mm}}
 .dance,.still{display:inline-block}
 .dance{animation:dance .32s ease-in-out infinite alternate;transform-origin:50% 90%}
 .still{filter:grayscale(.6);opacity:.75}
@@ -128,6 +134,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <main class="stage" id="stage"></main>
 </div>
 <div id="ring" hidden></div>
+<div id="printSheet"></div>
 <video id="cam" hidden playsinline muted></video>
 
 <div id="settings" hidden>
@@ -343,8 +350,8 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keyup', e => { if (!settingsOpen && cfg.mode && cfg.mode !== 'olhar' && isKey(e)) e.preventDefault(); });
 // em varrimento, o ecrã inteiro é o botão
-stage.addEventListener('pointerdown', e => { if (Input.isScan()) { e.preventDefault(); Input.press(); } });
-stage.addEventListener('click', e => { if (Input.isScan() && e.isTrusted) { e.stopPropagation(); e.preventDefault(); } }, true);
+stage.addEventListener('pointerdown', e => { if (e.target.closest && e.target.closest('.edu')) return; if (Input.isScan()) { e.preventDefault(); Input.press(); } });
+stage.addEventListener('click', e => { if (e.target.closest && e.target.closest('.edu')) return; if (Input.isScan() && e.isTrusted) { e.stopPropagation(); e.preventDefault(); } }, true);
 document.addEventListener('pointermove', e => { dwell.x = e.clientX; dwell.y = e.clientY; });
 document.documentElement.addEventListener('pointerleave', () => { dwell.x = -1; });
 
@@ -507,12 +514,81 @@ function win(again, menu, msg) {
 const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
 /* ---------- jogos ---------- */
+/* ---------- atelier criativo (biblioteca SouEspecial) ---------- */
+const AT_LAYERS = {"gato": {"title": "O Gato Tobias", "kind": "layers", "layers": {"fur": [{"name": "Laranja", "color": "#e98c28"}, {"name": "Cinzento", "color": "#898b96"}], "eyes": [{"name": "Verdes", "color": "#3b9e53"}, {"name": "Azuis", "color": "#317fd9"}]}}, "elefante": {"title": "O Elefante Tico", "kind": "layers", "layers": {"body": [{"name": "Cinzento", "color": "#a5a8ba"}, {"name": "Azul", "color": "#61a9ec"}], "ears": [{"name": "Rosa", "color": "#e99cab"}, {"name": "Amarelo", "color": "#e6c44b"}], "eyes": [{"name": "Castanhos", "color": "#7b4c28"}, {"name": "Azuis", "color": "#3c83d5"}]}}, "leo": {"title": "O Leo — Outono e Inverno", "kind": "layers", "layers": {"hair": [{"name": "Castanho", "color": "#714022"}, {"name": "Preto", "color": "#202020"}], "skin": [{"name": "Clara", "color": "#f5b68f"}, {"name": "Escura", "color": "#925733"}], "eyes": [{"name": "Castanhos", "color": "#754022"}, {"name": "Azuis", "color": "#387ecc"}], "coat": [{"name": "Amarelo", "color": "#ebbc2f"}, {"name": "Vermelho", "color": "#d83d42"}], "hat": [{"name": "Azul", "color": "#3665bc"}, {"name": "Verde", "color": "#27945d"}]}}};
+const AT_CHEF = { title: 'O Chef de Cozinha', opts: [{k:'hair',name:'cabelo',question:'De que cor é o cabelo do Chef?',choices:[['Castanho','#6e432a'],['Preto','#282527']]},{k:'skin',name:'pele',question:'De que cor é a pele do Chef?',choices:[['Clara','#f2b38b'],['Escura','#945d43']]},{k:'eyes',name:'olhos',question:'De que cor são os olhos do Chef?',choices:[['Verdes','#31a74b'],['Azuis','#397fd4']]},{k:'apron',name:'avental',question:'De que cor é o avental?',choices:[['Verde','#1ea75d'],['Vermelho','#de252c']]},{k:'hat',name:'chapéu',question:'De que cor é o chapéu?',choices:[['Branco','#f7f7f7'],['Azul','#669fdf']]}],
+  def: { hair: 0, skin: 0, eyes: 0, apron: 1, hat: 0 } };
+const AT_Q = { hair: 'De que cor é o cabelo?', skin: 'De que cor é a pele?', eyes: 'De que cor são os olhos?', apron: 'De que cor é o avental?', hat: 'De que cor é o chapéu ou o gorro?', fur: 'De que cor é o pelo?', body: 'De que cor é o corpo?', ears: 'De que cor são as orelhas?', coat: 'De que cor é o casaco?' };
+const AT_N = { hair: 'cabelo', skin: 'pele', eyes: 'olhos', apron: 'avental', hat: 'chapéu', fur: 'pelo', body: 'corpo', ears: 'orelhas', coat: 'casaco' };
+const CAN_PRINT = !/claude/i.test(location.hostname);
+let chefData = null;
+const loadImg = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+async function chefPrep() {
+  if (chefData) return chefData;
+  const keys = AT_CHEF.opts.map(o => o.k), ims = await Promise.all([loadImg(IMG['at-chef-base']), ...keys.map(k => loadImg(IMG['at-chef-m-' + k]))]);
+  const c = document.createElement('canvas'); c.width = 512; c.height = 768; const x = c.getContext('2d', { willReadFrequently: true });
+  x.drawImage(ims[0], 0, 0, 512, 768); const orig = x.getImageData(0, 0, 512, 768), masks = {};
+  keys.forEach((k, j) => { x.clearRect(0, 0, 512, 768); x.drawImage(ims[j + 1], 0, 0, 512, 768); masks[k] = x.getImageData(0, 0, 512, 768).data; });
+  return (chefData = { orig, masks });
+}
+function chefPaint(canvas, sel) {
+  chefPrep().then(({ orig, masks }) => {
+    const o = orig.data, r = new Uint8ClampedArray(o);
+    for (const op of AT_CHEF.opts) {
+      const ix = sel[op.k]; if (ix === AT_CHEF.def[op.k]) continue;
+      const v = op.choices[ix][1], rgb = [1, 3, 5].map(p => parseInt(v.slice(p, p + 2), 16)), m = masks[op.k];
+      for (let i = 0; i < r.length; i += 4) {
+        const a = m[i] / 255; if (a < .01) continue;
+        const st = Math.min(1.4, Math.max(.25, (o[i] * .2126 + o[i + 1] * .7152 + o[i + 2] * .0722) / 180));
+        for (let k = 0; k < 3; k++) r[i + k] = r[i + k] * (1 - a) + rgb[k] * st * a;
+      }
+    }
+    canvas.getContext('2d').putImageData(new ImageData(r, 512, 768), 0, 0);
+  }).catch(() => {});
+}
+function atPicture(key, sel) {
+  if (key === 'chef') return '<canvas class="atcanvas" width="512" height="768"></canvas>';
+  const d = AT_LAYERS[key];
+  return `<div class="atstack"><img src="${IMG['at-' + key + '-base']}" alt="">` + Object.keys(d.layers).map(r => `<img src="${IMG['at-' + key + '-' + r + '-' + sel[r]]}" alt="">`).join('') + '</div>';
+}
+function menuAtelier() {
+  const chars = [['chef', AT_CHEF.title], ...Object.entries(AT_LAYERS).map(([k, v]) => [k, v.title])];
+  show({ title: 'Atelier criativo', say: 'Atelier criativo. Escolhe uma personagem para pintar.', cols: 2,
+    items: [...chars.map(([k, t], i) => ({ label: t, icon: pic('at-' + k + '-base', '🎨'), color: PAL[i % 4], on: () => atelier(k) })), back(menuJogos)] });
+}
+function atelier(key) {
+  const isChef = key === 'chef';
+  const steps = isChef ? AT_CHEF.opts.map(o => ({ k: o.k, q: o.question, n: o.name, ch: o.choices.map(c => ({ name: c[0], color: c[1] })) }))
+    : Object.entries(AT_LAYERS[key].layers).map(([k, ch]) => ({ k, q: AT_Q[k] || 'Escolhe uma cor', n: AT_N[k] || k, ch }));
+  const title = isChef ? AT_CHEF.title : AT_LAYERS[key].title;
+  const sel = {}; steps.forEach(st => sel[st.k] = isChef ? AT_CHEF.def[st.k] : 0);
+  const pictureHTML = () => `<div class="atwrap">${atPicture(key, sel)}<div class="chips">${steps.map(st => `<i>${st.n}: ${st.ch[sel[st.k]].name.toLowerCase()}</i>`).join('')}</div></div>`;
+  const after = () => { const c = stage.querySelector('.atcanvas'); if (c) chefPaint(c, sel); };
+  const step = i => {
+    if (i >= steps.length) {
+      const pr = CAN_PRINT ? `<div class="rowb edu" style="justify-content:center"><button type="button" class="ctl" id="atPrint">🖨️ Imprimir o contorno para pintar (educador)</button></div>` : '';
+      show({ title: 'A personagem está pronta!', extra: pictureHTML() + pr, say: 'A personagem está pronta! Que bonita!', cols: 2,
+        items: [{ label: 'Pintar outra vez', icon: '🎨', color: '--green', on: () => atelier(key) }, back(menuAtelier)] });
+      after(); sfx.fanfare();
+      const b = $('#atPrint'); if (b) b.onclick = () => { $('#printSheet').innerHTML = `<img src="${IMG['at-' + key + '-bw']}" alt="">`; try { window.print(); } catch (e) {} };
+      return;
+    }
+    const st = steps[i];
+    show({ title: st.q, extra: `<div class="hsbar" style="text-align:center">${title} · pergunta ${i + 1} de ${steps.length}</div>` + pictureHTML(), say: st.q, cols: 2,
+      items: [...st.ch.map((c, j) => ({ label: c.name, icon: `<span class="sw" style="background:${c.color}"></span>`, color: j ? '--orange' : '--blue',
+        on() { sel[st.k] = j; sfx.ok(); step(i + 1); } })), back(menuAtelier)] });
+    after();
+  };
+  step(0);
+}
+
 function menuJogos() {
   show({ title: 'Jogos', say: 'Jogos. Escolhe um jogo.', cols: 3, items: [
     { label: 'Rebenta os balões', icon: '🎈', color: '--red', on: balloons },
     { label: 'Rega a flor', icon: pic('girassol', '🌻'), color: '--green', on: flower },
     { label: 'Onde está o animal?', icon: '🐶', color: '--blue', on: findAnimal },
     { label: 'Jogo dos pares', icon: '🃏', color: '--violet', on: memory },
+    { label: 'Atelier criativo', icon: pic('at-chef-base', '🎨'), color: '--orange', on: menuAtelier },
     back(home) ] });
 }
 function balloons() {
